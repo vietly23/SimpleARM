@@ -4,7 +4,7 @@ module alu (input logic signed [31:0] a, b,
 	output logic zero,
 	output logic negative,
 	output logic carry,
-	output logic overflow)
+	output logic overflow);
 
 define ADD 2'b00
 define SUB 2'b01
@@ -35,9 +35,9 @@ case(opcode)
 			overflow <= 1'b0;
 	end
 	`ORR:
-	assign c = a | b;
+		assign c = a | b;
 	`AND:
-	assign c = a & b;
+		assign c = a & b;
 endcase
 if(c == 0)
 	zero <= 1;
