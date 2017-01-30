@@ -6,10 +6,10 @@ module alu (input logic [31:0] a, b,
 	output logic carry,
 	output logic overflow);
 
-define ADD 2'b00
-define SUB 2'b01
-define AND 2'b10
-define ORR 2'b11
+`define ADD 2'b00
+`define SUB 2'b01
+`define AND 2'b10
+`define ORR 2'b11
 
 logic [1:0] is_overflow;
 
@@ -17,19 +17,19 @@ case(opcode)
 	`ADD:
 	begin
 		assign {carry,c} = a + b;
-		if (a[31] & b[31] & ~output[31])
+		if (a[31] & b[31] & ~c[31])
 			overflow <= 1'b1;
-		else if (~a[31] & ~b[31] & output[31])
+		else if (~a[31] & ~b[31] & c[31])
 			overflow <= 1'b1;
 		else 
 			overflow <= 1'b0;
 	end
 	`SUB:
 	begin
-		assign {carry,c} = a + (~b) + 1;
-		if (a[31] & ~b[31] & ~output[31])
+		assign {carry,c} = (a + (~b)) + 1;
+		if (a[31] & ~b[31] & ~c[31])
 			overflow <= 1'b1;
-		else if (~a[31] & b[31] & output[31])
+		else if (~a[31] & b[31] & c[31])
 			overflow <= 1'b1;
 		else 
 			overflow <= 1'b0;
