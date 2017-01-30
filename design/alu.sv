@@ -14,11 +14,12 @@ module alu (input logic [31:0] a, b,
 logic [1:0] is_overflow;
 logic [31:0] temp;
 
+
 always_comb
 	case(opcode)
 		`ADD:
 		begin
-			{carry,c} <= a + b;
+			{carry,temp} <= a + b;
 			if (a[31] & b[31] & ~c[31])
 				overflow <= 1'b1;
 			else if (~a[31] & ~b[31] & c[31])
@@ -29,7 +30,7 @@ always_comb
 
 		`SUB:
 		begin
-			{carry,c} <= (a + (~b)) + 1;
+			{carry,temp} <= (a + (~b)) + 1;
 			if (a[31] & ~b[31] & ~c[31])
 				overflow <= 1'b1;
 			else if (~a[31] & b[31] & c[31])
@@ -40,14 +41,14 @@ always_comb
 
 		`AND:
 		begin
-			c <= a & b;
+			temp <= a & b;
 			carry <= 1'b0;
 			overflow <= 1'b0;
 		end
 
 		`ORR:
 		begin
-			c <= a | b;
+			temp <= a | b;
 			carry <= 1'b0;
 			overflow <= 1'b0;
 		end
@@ -61,4 +62,6 @@ always_comb
 
 always_comb
 	negative <= temp[31];
+always_comb
+	c <= temp;
 endmodule
