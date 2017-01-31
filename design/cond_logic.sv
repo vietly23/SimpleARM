@@ -10,10 +10,10 @@ module condlogic(input  logic       clk, reset,
 	logic [3:0] Flags;
 	logic       CondEx;
 	
-	flopenr #(2)flagregl(clk, reset, FlagWrite[1],
+	flopenr #(2)flagregl1(clk, reset, FlagWrite[1],
 						 ALUFlags[3:2], Flags[3:2]);
 						 
-	flopenr #(2)flagregl(clk, reset, FlagWrite[0],
+	flopenr #(2)flagregl0(clk, reset, FlagWrite[0],
 						 ALUFlags[1:0], Flags[1:0]);
 	
 	// write controls are conditional
