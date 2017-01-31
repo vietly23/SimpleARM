@@ -1,0 +1,5 @@
+# Ignore work directories
+
+**work
+**transcript
+*.wlf
