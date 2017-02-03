@@ -8,7 +8,7 @@ module tb_top();
 
 
     // instantiate device to be tested
-    top dut(clk, reset, WriteData, DataAdr, MemWrite);
+    top dut(clk, reset, DataAdr, WriteData, MemWrite);
 
 
     // initialize test
