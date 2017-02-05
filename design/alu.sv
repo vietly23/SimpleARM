@@ -22,49 +22,49 @@ always_comb
 	case(opcode)
 		`ADD:
 		begin
-			{flags[CAR],temp} <= a + b;
+			{flags[`CAR],temp} <= a + b;
 			if (a[31] & b[31] & ~c[31])
-				flags[OVR] <= 1'b1;
+				flags[`OVR] <= 1'b1;
 			else if (~a[31] & ~b[31] & c[31])
-				flags[OVR] <= 1'b1;
+				flags[`OVR] <= 1'b1;
 			else 
-				flags[OVR] <= 1'b0;
+				flags[`OVR] <= 1'b0;
 		end
 
 		`SUB:
 		begin
-			{flags[CAR],temp} <= (a + (~b)) + 1;
+			{flags[`CAR],temp} <= (a + (~b)) + 1;
 			if (a[31] & ~b[31] & ~c[31])
-				flags[OVR] <= 1'b1;
+				flags[`OVR] <= 1'b1;
 			else if (~a[31] & b[31] & c[31])
-				flags[OVR] <= 1'b1;
+				flags[`OVR] <= 1'b1;
 			else 
-				flags[OVR] <= 1'b0;
+				flags[`OVR] <= 1'b0;
 		end
 
 		`AND:
 		begin
 			temp <= a & b;
-			flags[CAR] <= 1'b0;
-			flags[OVR] <= 1'b0;
+			flags[`CAR] <= 1'b0;
+			flags[`OVR] <= 1'b0;
 		end
 
 		`ORR:
 		begin
 			temp <= a | b;
-			flags[CAR] <= 1'b0;
-			flags[OVR] <= 1'b0;
+			flags[`CAR] <= 1'b0;
+			flags[`OVR] <= 1'b0;
 		end
 	endcase
 
 always_comb
 	if(temp == 0)
-		flags[ZER] <= 1'b1;
+		flags[`ZER] <= 1'b1;
 	else
-		flags[ZER] <= 1'b0;
+		flags[`ZER] <= 1'b0;
 
 always_comb
-	flags[NEG] <= temp[31];
+	flags[`NEG] <= temp[31];
 always_comb
 	c <= temp;
 endmodule
