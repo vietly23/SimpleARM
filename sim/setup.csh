@@ -1,4 +1,3 @@
-
 setenv PATH /home/linware/mentor/questa/questasim/:/home/linware/mentor/questa/questasim/bin/:$PATH
 
 setenv LM_LICENSE_FILE 1717@vivian.eecs.uci.edu
@@ -21,4 +20,3 @@ setenv model `pwd`/model
 setenv verif `pwd`/verif
 
 cd $sim
-
