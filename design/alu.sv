@@ -1,12 +1,25 @@
 module alu (input logic [31:0] a, b,
-	input logic [1:0] opcode,
+	input logic [4:0] opcode,
 	output logic [31:0] c,
 	output logic [3:0] flags);
 
-`define ADD 2'b00
-`define SUB 2'b01
-`define AND 2'b10
-`define ORR 2'b11
+`define AND 4'h0
+`define EOR 4'h1
+`define SUB 4'h2
+`define RSB 4'h3
+`define ADD 4'h4
+`define ADC 4'h5
+`define SBC 4'h6
+`define RSC 4'h7
+`define TST 4'h8
+`define TEQ 4'h9
+`define CMP 4'hA
+`define CMN 4'hB
+`define ORR 4'hC
+`define BIC 4'hD
+`define MVN 4'hE
+
+`define SHIFT 4'h13
 
 // From 0 to 3, negative, zero, carry, overflow in that respective order
 `define NEG 0
@@ -17,54 +30,87 @@ module alu (input logic [31:0] a, b,
 
 logic [31:0] temp;
 
+always @* begin
+case(opcode)
+	`AND: begin
+		temp = a & b;	
+		flags[`CAR] = 1'b0;
+		flags[`OVR] = 1'b0;
+	end
+	`TST: begin
+		temp = a & b;	
+		flags[`CAR] = 1'b0;
+		flags[`OVR] = 1'b0;
+	end
+	`TEQ: begin
+		temp = a ^ b;	
+		flags[`CAR] = 1'b0;
+		flags[`OVR] = 1'b0;
+	end
+	`CMP: begin
+		{flags[`CAR],temp} = (a + (~b)) + 1;
+		if (a[31] & ~b[31] & ~c[31])
+			  flags[`OVR] = 1'b1;
+		else if (~a[31] & b[31] & c[31])
+			  flags[`OVR] = 1'b1;
+		else 
+			  flags[`OVR] = 1'b0;
+	end
+	`CMN: begin
+		{flags[`CAR],temp} = a + b;
+		if (a[31] & b[31] & ~c[31])
+			 flags[`OVR] = 1'b1;
+		else if (~a[31] & ~b[31] & c[31])
+			 flags[`OVR] = 1'b1;
+		else 
+			 flags[`OVR] = 1'b0;
+		temp = a & b;	
+	end
+	`EOR: begin
+		assign temp = a ^ b;
+		 flags[`CAR] = 1'b0;
+		 flags[`OVR] = 1'b0;
+	end
+	`SUB: begin
+		{flags[`CAR],temp} = (a + (~b)) + 1;
+		if (a[31] & ~b[31] & ~c[31])
+			  flags[`OVR] = 1'b1;
+		else if (~a[31] & b[31] & c[31])
+			  flags[`OVR] = 1'b1;
+		else 
+			  flags[`OVR] = 1'b0;
+	end
+	`RSB: begin
+		{flags[`CAR],temp} = ((~a) + b) + 1;
+		if (a[31] & ~b[31] & ~c[31])
+			 flags[`OVR] = 1'b1;
+		else if (~a[31] & b[31] & c[31])
+			 flags[`OVR] = 1'b1;
+		else 
+			 flags[`OVR] = 1'b0;
+	end
+	`ADD: begin
+		{flags[`CAR],temp} = a + b;
+		if (a[31] & b[31] & ~c[31])
+			 flags[`OVR] = 1'b1;
+		else if (~a[31] & ~b[31] & c[31])
+			 flags[`OVR] = 1'b1;
+		else 
+			 flags[`OVR] = 1'b0;
+	end
+	`ORR: begin
+		 assign temp = a | b;
+		 flags[`CAR] = 1'b0;
+		 flags[`OVR] = 1'b0;
+	end
+endcase
 
-always_comb
-	case(opcode)
-		`ADD:
-		begin
-			{flags[`CAR],temp} <= a + b;
-			if (a[31] & b[31] & ~c[31])
-				flags[`OVR] <= 1'b1;
-			else if (~a[31] & ~b[31] & c[31])
-				flags[`OVR] <= 1'b1;
-			else 
-				flags[`OVR] <= 1'b0;
-		end
+if(temp == 0)
+	 flags[`ZER] = 1'b1;
+else
+	 flags[`ZER] = 1'b0;
 
-		`SUB:
-		begin
-			{flags[`CAR],temp} <= (a + (~b)) + 1;
-			if (a[31] & ~b[31] & ~c[31])
-				flags[`OVR] <= 1'b1;
-			else if (~a[31] & b[31] & c[31])
-				flags[`OVR] <= 1'b1;
-			else 
-				flags[`OVR] <= 1'b0;
-		end
-
-		`AND:
-		begin
-			temp <= a & b;
-			flags[`CAR] <= 1'b0;
-			flags[`OVR] <= 1'b0;
-		end
-
-		`ORR:
-		begin
-			temp <= a | b;
-			flags[`CAR] <= 1'b0;
-			flags[`OVR] <= 1'b0;
-		end
-	endcase
-
-always_comb
-	if(temp == 0)
-		flags[`ZER] <= 1'b1;
-	else
-		flags[`ZER] <= 1'b0;
-
-always_comb
-	flags[`NEG] <= temp[31];
-always_comb
-	c <= temp;
+flags[`NEG] = temp[31];
+end
+assign c = temp;
 endmodule
