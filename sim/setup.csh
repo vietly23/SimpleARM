@@ -12,6 +12,8 @@ setenv QUESTA_UVM_HOME $QUESTA_HOME/verilog_src/questa_uvm_pkg-1.2
 setenv UVM_HOME $QUESTA_HOME/verilog_src/uvm-1.1d
 
 
+source /ecelib/linware/synopsys15/env/dc.csh
+
 cd ..
 setenv sim `pwd`/sim
 
