@@ -1,4 +1,5 @@
 module alu (input logic [31:0] a, b,
+	input logic carry,
 	input logic [4:0] opcode,
 	output logic [31:0] c,
 	output logic [3:0] flags);
@@ -19,8 +20,6 @@ module alu (input logic [31:0] a, b,
 `define BIC 4'hD
 `define MVN 4'hE
 
-`define SHIFT 4'h13
-
 // From 0 to 3, negative, zero, carry, overflow in that respective order
 `define NEG 0
 `define ZER 1
@@ -36,6 +35,67 @@ case(opcode)
 		temp = a & b;	
 		flags[`CAR] = 1'b0;
 		flags[`OVR] = 1'b0;
+	end
+	`EOR: begin
+		temp = a ^ b;
+		flags[`CAR] = 1'b0;
+		flags[`OVR] = 1'b0;
+	end
+	`SUB: begin
+		{flags[`CAR],temp} = (a + (~b)) + 1;
+		if (a[31] & ~b[31] & ~c[31])
+			  flags[`OVR] = 1'b1;
+		else if (~a[31] & b[31] & c[31])
+			  flags[`OVR] = 1'b1;
+		else 
+			  flags[`OVR] = 1'b0;
+	end
+	`RSB: begin
+		{flags[`CAR],temp} = ((~a) + b) + 1;
+ 	     	if (a[31] & ~b[31] & ~c[31])
+			 flags[`OVR] = 1'b1;
+		else if (~a[31] & b[31] & c[31])
+			 flags[`OVR] = 1'b1;
+		else 
+			 flags[`OVR] = 1'b0;
+	end
+	`ADD: begin
+		{flags[`CAR],temp} = a + b;
+		if (a[31] & b[31] & ~c[31])
+			 flags[`OVR] = 1'b1;
+		else if (~a[31] & ~b[31] & c[31])
+			 flags[`OVR] = 1'b1;
+		else 
+			 flags[`OVR] = 1'b0;
+	end
+	`ADC: begin
+		{flags[`CAR],temp} = a + b + carry;
+		if (a[31] & b[31] & ~c[31])
+			 flags[`OVR] = 1'b1;
+		else if (~a[31] & ~b[31] & c[31])
+			 flags[`OVR] = 1'b1;
+		else 
+			 flags[`OVR] = 1'b0;
+	end
+	`SBC: begin
+		if (carry) {flags[`CAR],temp} = (a + (~b));
+		else {flags[`CAR],temp} = (a + (~b)) + 1;
+		if (a[31] & b[31] & ~c[31])
+			 flags[`OVR] = 1'b1;
+		else if (~a[31] & ~b[31] & c[31])
+			 flags[`OVR] = 1'b1;
+		else 
+			 flags[`OVR] = 1'b0;
+	end
+	`RSC: begin
+		if (carry) {flags[`CAR],temp} = ((~a) + b);
+		else {flags[`CAR],temp} = ((~a) + b) + 1;
+ 	     	if (a[31] & ~b[31] & ~c[31])
+			 flags[`OVR] = 1'b1;
+		else if (~a[31] & b[31] & c[31])
+			 flags[`OVR] = 1'b1;
+		else 
+			 flags[`OVR] = 1'b0;
 	end
 	`TST: begin
 		temp = a & b;	
@@ -64,52 +124,20 @@ case(opcode)
 			 flags[`OVR] = 1'b1;
 		else 
 			 flags[`OVR] = 1'b0;
-		temp = a & b;	
-	end
-	`EOR: begin
-		assign temp = a ^ b;
-		 flags[`CAR] = 1'b0;
-		 flags[`OVR] = 1'b0;
-	end
-	`SUB: begin
-		{flags[`CAR],temp} = (a + (~b)) + 1;
-		if (a[31] & ~b[31] & ~c[31])
-			  flags[`OVR] = 1'b1;
-		else if (~a[31] & b[31] & c[31])
-			  flags[`OVR] = 1'b1;
-		else 
-			  flags[`OVR] = 1'b0;
-	end
-	`RSB: begin
-		{flags[`CAR],temp} = ((~a) + b) + 1;
-		if (a[31] & ~b[31] & ~c[31])
-			 flags[`OVR] = 1'b1;
-		else if (~a[31] & b[31] & c[31])
-			 flags[`OVR] = 1'b1;
-		else 
-			 flags[`OVR] = 1'b0;
-	end
-	`ADD: begin
-		{flags[`CAR],temp} = a + b;
-		if (a[31] & b[31] & ~c[31])
-			 flags[`OVR] = 1'b1;
-		else if (~a[31] & ~b[31] & c[31])
-			 flags[`OVR] = 1'b1;
-		else 
-			 flags[`OVR] = 1'b0;
 	end
 	`ORR: begin
-		 assign temp = a | b;
+		 temp = a | b;
 		 flags[`CAR] = 1'b0;
 		 flags[`OVR] = 1'b0;
 	end
+	default
+		temp = 32'h00000000;
 endcase
 
 if(temp == 0)
 	 flags[`ZER] = 1'b1;
 else
 	 flags[`ZER] = 1'b0;
-
 flags[`NEG] = temp[31];
 end
 assign c = temp;
