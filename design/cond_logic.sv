@@ -10,9 +10,10 @@ module cond_logic(input  logic       clk, reset,
 	logic [3:0] Flags;
 	logic       CondEx;
 	
+	//Over[1] carry[0]
 	flopenr #(2)flagregl1(clk, reset, FlagWrite[1],
 						 ALUFlags[3:2], Flags[3:2]);
-						 
+	//Zero[1] neg[0]	
 	flopenr #(2)flagregl0(clk, reset, FlagWrite[0],
 						 ALUFlags[1:0], Flags[1:0]);
 	
