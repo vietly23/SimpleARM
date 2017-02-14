@@ -13,7 +13,7 @@ case(opcode)
 	// ASR
 	3'b011: begin
 		if (a[31]) 
-			a_out = (a >> shift);// | (32'hFFFFFFFF << ~shift);
+			a_out = (a >> shift) | (32'hFFFFFFFF << ~shift);
 		else 
 			a_out = a >> shift;
 	end
