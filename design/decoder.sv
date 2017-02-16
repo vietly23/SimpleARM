@@ -4,7 +4,8 @@ module decoder(input logic [1:0] Op,
 	output logic [1:0] FlagW, 
 	output logic PCS, RegW, MemW, 
 	output logic MemtoReg, ALUSrc, 
-	output logic [1:0] ImmSrc, RegSrc, ALUControl);
+	output logic [1:0] ImmSrc, RegSrc,
+	output logic [3:0] ALUControl);
 
 	logic [9:0] controls; 
 	logic Branch, ALUOp;
@@ -29,22 +30,35 @@ module decoder(input logic [1:0] Op,
 	assign {RegSrc, ImmSrc, ALUSrc, MemtoReg, 
 		RegW, MemW, Branch, ALUOp} = controls;
 
+	//Copy paste from alu.sv - make sure this is synchd
+	`define AND 4'h0
+	`define EOR 4'h1
+	`define SUB 4'h2
+	`define RSB 4'h3
+	`define ADD 4'h4
+	`define ADC 4'h5
+	`define SBC 4'h6
+	`define RSC 4'h7
+	`define TST 4'h8
+	`define TEQ 4'h9
+	`define CMP 4'hA
+	`define CMN 4'hB
+	`define ORR 4'hC
+	`define BIC 4'hE // hD is for shifting
+	`define MVN 4'hF 
+	
 	// ALU Decoder
 	 always_comb 
 	 if (ALUOp) begin // which DP Instr? 
-	 	case(Funct[4:1]) 
-	 	4'b0100: ALUControl = 2'b00; // ADD 
-	 	4'b0010: ALUControl = 2'b01; // SUB 
-	 	4'b0000: ALUControl = 2'b10; // AND 
-	 	4'b1100: ALUControl = 2'b11; // ORR 
-	 	default: ALUControl = 2'bx; // unimplemented 
-	 	endcase
+		//Pass the code to the alu,
+	 	ALUControl = Funct[4:1];
+		
 		// update flags if S bit is set (C & V only for arith) 
-		FlagW[1] = Funct[0]; 
-		FlagW[0] = Funct[0] & 
-			(ALUControl == 2'b00 | ALUControl == 2'b01);
+		FlagW[1] = Funct[0]; //ovr,carry
+		FlagW[0] = Funct[0] & //zero,neg
+			(ALUControl == 4'b0000 | ALUControl == 4'b0001);
 	end else begin 
-		ALUControl = 2'b00; // add for non-DP instructions 
+		ALUControl = 4'b0000; // add for non-DP instructions 
 		FlagW = 2'b00; // don't update Flags 
 	end
 	// PC Logic 
