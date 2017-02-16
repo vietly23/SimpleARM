@@ -56,9 +56,9 @@ module decoder(input logic [1:0] Op,
 		// update flags if S bit is set (C & V only for arith) 
 		FlagW[1] = Funct[0]; //ovr,carry
 		FlagW[0] = Funct[0] & //zero,neg
-			(ALUControl == 2'b0000 | ALUControl == 2'b0001);
+			(ALUControl == 4'b0000 | ALUControl == 4'b0001);
 	end else begin 
-		ALUControl = 2'b0000; // add for non-DP instructions 
+		ALUControl = 4'b0000; // add for non-DP instructions 
 		FlagW = 2'b00; // don't update Flags 
 	end
 	// PC Logic 

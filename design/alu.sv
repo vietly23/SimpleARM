@@ -1,6 +1,6 @@
 module alu (input logic [31:0] a, b,
 	input logic carry,
-	input logic [4:0] opcode,
+	input logic [3:0] opcode,
 	output logic [31:0] c,
 	output logic [3:0] flags);
 

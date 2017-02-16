@@ -4,7 +4,8 @@ module cond_logic(input  logic       clk, reset,
 				 input  logic [1:0] FlagW,
 				 input  logic       PCS, RegW, MemW,
 				 output logic       PCSrc, RegWrite, 
-									MemWrite);
+									MemWrite,
+				 output logic       storedCarry);
 									
 	logic [1:0] FlagWrite;
 	logic [3:0] Flags;
@@ -24,6 +25,9 @@ module cond_logic(input  logic       clk, reset,
 	assign RegWrite  = RegW  & CondEx;
 	assign MemWrite  = MemW  & CondEx;
 	assign PCSrc     = PCS   & CondEx;
+	
+	//expose carry flag for alu
+	assign storedCarry = Flags[2];
 	
 endmodule
 					

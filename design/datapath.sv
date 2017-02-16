@@ -1,16 +1,17 @@
 module datapath(input logic clk, reset, 
-		input logic [1:0] RegSrc, 
-		input logic RegWrite, 
-		input logic [1:0] ImmSrc, 
-		input logic ALUSrc, 
-		input logic [3:0] ALUControl, 
-		input logic MemtoReg, 
-		input logic PCSrc, 
+		input logic  [1:0] RegSrc, 
+		input logic  RegWrite, 
+		input logic  [1:0] ImmSrc, 
+		input logic  ALUSrc, 
+		input logic  [3:0] ALUControl, 
+		input logic  MemtoReg, 
+		input logic  PCSrc, 
 		output logic [3:0] ALUFlags, 
 		output logic [31:0] PC, 
-		input logic [31:0] Instr, 
+		input logic  [31:0] Instr, 
 		output logic [31:0] ALUResult, WriteData, 
-		input logic [31:0] ReadData);
+		input logic  [31:0] ReadData,
+		input logic  storedCarry);
 
 	logic [31:0] PCNext, PCPlus4, PCPlus8; 
 	logic [31:0] ExtImm, SrcA, SrcB, Result; 
@@ -31,5 +32,5 @@ module datapath(input logic clk, reset,
 	extend ext(Instr[23:0], ImmSrc, ExtImm);
 	// ALU logic 
 	mux #(32) srcbmux(WriteData, ExtImm, ALUSrc, SrcB); 
-	alu alu(SrcA, SrcB, ALUControl, ALUResult, ALUFlags); 
+	alu alu(SrcA, SrcB, storedCarry, ALUControl, ALUResult, ALUFlags); 
 endmodule
