@@ -1,7 +1,7 @@
 module decoder(input logic [1:0] Op, 
 	input logic [5:0] Funct, 
 	input logic [3:0] Rd, 
-	output logic [1:0] FlagW, 
+	output logic [3:0] FlagW, //which flags to write
 	output logic PCS, RegW, MemW, 
 	output logic MemtoReg, ALUSrc, 
 	output logic [1:0] ImmSrc, RegSrc,
@@ -44,8 +44,14 @@ module decoder(input logic [1:0] Op,
 	`define CMP 4'hA
 	`define CMN 4'hB
 	`define ORR 4'hC
-	`define BIC 4'hE // hD is for shifting
+	`define BIC 4'hE 
+	`define PAS 4'hD //pass b input through alu
 	`define MVN 4'hF 
+	
+	`define NEG 3
+	`define ZER 2
+	`define CAR 1
+	`define OVR 0
 	
 	// ALU Decoder
 	 always_comb 
@@ -53,13 +59,29 @@ module decoder(input logic [1:0] Op,
 		//Pass the code to the alu,
 	 	ALUControl = Funct[4:1];
 		
-		// update flags if S bit is set (C & V only for arith) 
-		FlagW[1] = Funct[0]; //ovr,carry
-		FlagW[0] = Funct[0] & //zero,neg
-			(ALUControl == 4'b0000 | ALUControl == 4'b0001);
+		//Set NZC when S is set
+		FlagW[`NEG] = Funct[0];
+		FlagW[`ZER] = Funct[0];
+		FlagW[`CAR] = Funct[0];
+		
+		case(Funct[4:1])
+			`CMP: begin
+				FlagW = 4'b1111; 			
+			end
+			`CMN: begin
+				FlagW = 4'b1111; 			
+			end		
+			`TEQ: begin
+				FlagW[3:1] = 3'b111; 			
+			end		
+			`TST: begin
+				FlagW[3:1] = 3'b111; 			
+			end			
+		endcase
+		
 	end else begin 
-		ALUControl = 4'b0000; // add for non-DP instructions 
-		FlagW = 2'b00; // don't update Flags 
+		ALUControl = `ADD; // add for non-DP instructions 
+		FlagW = 4'b0000; // don't update Flags 
 	end
 	// PC Logic 
 	assign PCS = ((Rd == 4'b1111) & RegW) | Branch; 

@@ -5,6 +5,8 @@ module tb_top();
     logic [31:0] DataAdr;
     logic [31:0] WriteData;
     logic MemWrite;
+	
+	reg[5:0] count;
 
 
     // instantiate device to be tested
@@ -14,6 +16,7 @@ module tb_top();
     // initialize test
     initial
     begin
+		count <= 0;
         reset <= 1; # 22; reset <= 0;
     end
 
@@ -27,6 +30,11 @@ module tb_top();
     // at end of program
     always @(negedge clk)
     begin
+		count ++;
+		if(count == 40) begin
+			$display("Limit Reached");
+			$stop;
+		end
         if(MemWrite) begin
             if(DataAdr === 100 & WriteData === 7) 
             begin

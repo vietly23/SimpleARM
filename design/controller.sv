@@ -9,7 +9,7 @@ module controller(	input logic clk, reset,
 					output logic MemWrite, MemtoReg,
 					output logic PCSrc,
 					output logic storedCarry);
-logic [1:0] FlagW;
+logic [3:0] FlagW;
 logic PCS, RegW, MemW;
 
 decoder decoder(Instr[27:26], Instr[25:20], Instr[15:12],

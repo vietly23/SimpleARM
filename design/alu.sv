@@ -17,14 +17,15 @@ module alu (input logic [31:0] a, b,
 `define CMP 4'hA
 `define CMN 4'hB
 `define ORR 4'hC
-`define BIC 4'hD
-`define MVN 4'hE
+`define BIC 4'hE 
+`define PAS 4'hD //pass b input through alu
+`define MVN 4'hF 
 
 // From 0 to 3, negative, zero, carry, overflow in that respective order
-`define NEG 0
-`define ZER 1
-`define CAR 2
-`define OVR 3
+`define NEG 3
+`define ZER 2
+`define CAR 1
+`define OVR 0
 
 
 logic [31:0] temp;

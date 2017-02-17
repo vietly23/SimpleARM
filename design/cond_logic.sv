@@ -1,33 +1,42 @@
 module cond_logic(input  logic       clk, reset,
 				 input  logic [3:0] Cond,
 				 input  logic [3:0] ALUFlags,
-				 input  logic [1:0] FlagW,
+				 input  logic [3:0] FlagW,
 				 input  logic       PCS, RegW, MemW,
 				 output logic       PCSrc, RegWrite, 
 									MemWrite,
 				 output logic       storedCarry);
 									
-	logic [1:0] FlagWrite;
 	logic [3:0] Flags;
 	logic       CondEx;
 	
-	//Over[1] carry[0]
-	flopenr #(2)flagregl1(clk, reset, FlagWrite[1],
-						 ALUFlags[3:2], Flags[3:2]);
-	//Zero[1] neg[0]	
-	flopenr #(2)flagregl0(clk, reset, FlagWrite[0],
-						 ALUFlags[1:0], Flags[1:0]);
+	//Flags
+	`define NEG 3
+	`define ZER 2
+	`define CAR 1
+	`define OVR 0
+	
+	flopenr #(1)negFlag(clk, reset, FlagW[`NEG],
+						 ALUFlags[`NEG], Flags[`NEG]);
+						 
+	flopenr #(1)zerFlag(clk, reset, FlagW[`ZER],
+						 ALUFlags[`ZER], Flags[`ZER]);
+
+	flopenr #(1)carFlag(clk, reset, FlagW[`CAR],
+						 ALUFlags[`CAR], Flags[`CAR]);
+
+	flopenr #(1)ovrFlag(clk, reset, FlagW[`OVR],
+						 ALUFlags[`OVR], Flags[`OVR]);						 
 	
 	// write controls are conditional
 	
 	condcheck cc(Cond, Flags, CondEx);
-	assign FlagWrite = FlagW & {2{CondEx}};
 	assign RegWrite  = RegW  & CondEx;
 	assign MemWrite  = MemW  & CondEx;
 	assign PCSrc     = PCS   & CondEx;
 	
 	//expose carry flag for alu
-	assign storedCarry = Flags[2];
+	assign storedCarry = Flags[`CAR];
 	
 endmodule
 					
