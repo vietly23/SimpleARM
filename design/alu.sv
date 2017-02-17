@@ -17,8 +17,8 @@ module alu (input logic [31:0] a, b,
 `define CMP 4'hA
 `define CMN 4'hB
 `define ORR 4'hC
-`define BIC 4'hE 
 `define PAS 4'hD //pass b input through alu
+`define BIC 4'hE 
 `define MVN 4'hF 
 
 // From 0 to 3, negative, zero, carry, overflow in that respective order
@@ -131,6 +131,21 @@ case(opcode)
 		 flags[`CAR] = 1'b0;
 		 flags[`OVR] = 1'b0;
 	end
+	`PAS: begin //take 2nd input and output it.
+		 temp = b;
+		 flags[`CAR] = 1'b0;
+		 flags[`OVR] = 1'b0;
+	end	
+	`BIC: begin 
+		 temp = a & (~b);
+		 flags[`CAR] = 1'b0;
+		 flags[`OVR] = 1'b0;
+	end	
+	`MVN: begin //use src2 instead of rn - see "typo in sup.." discussion 
+		 temp = ~b;
+		 flags[`CAR] = 1'b0;
+		 flags[`OVR] = 1'b0;
+	end	
 	default
 		temp = 32'h00000000;
 endcase

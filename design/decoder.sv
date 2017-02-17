@@ -44,8 +44,8 @@ module decoder(input logic [1:0] Op,
 	`define CMP 4'hA
 	`define CMN 4'hB
 	`define ORR 4'hC
-	`define BIC 4'hE 
 	`define PAS 4'hD //pass b input through alu
+	`define BIC 4'hE 
 	`define MVN 4'hF 
 	
 	`define NEG 3
@@ -64,7 +64,8 @@ module decoder(input logic [1:0] Op,
 		FlagW[`ZER] = Funct[0];
 		FlagW[`CAR] = Funct[0];
 		
-		case(Funct[4:1])
+		
+		case(Funct[4:1]) 
 			`CMP: begin
 				FlagW = 4'b1111; 			
 			end
