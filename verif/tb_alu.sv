@@ -64,7 +64,6 @@ module tb_alu();
 		assert(flags[`OVR] == 0) else $error ("SUB failed");		
 		
 		
-		$display("ALU passed");
 	end
 	
 endmodule
