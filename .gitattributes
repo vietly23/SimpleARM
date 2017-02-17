@@ -1,5 +1,3 @@
-setup.csh text eol=lf
-pre_compile.csh text eol=lf
-sim.do text eol=lf
-compile_everything.csh text eol=lf
+*.do text eol=lf
+*.csh text eol=lf
 run text eol=lf
