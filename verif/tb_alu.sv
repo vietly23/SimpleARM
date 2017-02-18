@@ -53,16 +53,19 @@ module tb_alu();
 		assert(out == -32'd5) else $error ("SUB failed");
 		assert(flags[`NEG] == 1) else $error ("SUB failed NEG");
 		assert(flags[`ZER] == 0) else $error ("SUB failed ZER");
-		assert(flags[`CAR] == 0) else $error ("SUB failed CAR");
+		//this carry is from the twos comp addition -it is valid and probably
+		//used in situations where you have to add/sub 64/128/... bit numbers
+		assert(flags[`CAR] == 1) else $error ("SUB failed CAR"); 
 		assert(flags[`OVR] == 0) else $error ("SUB failed OVR");
 
 		a = 32'd7; b = 32'd17; opcode = `SUB; #10;
 		assert(out == 32'd0) else $error ("SUB failed");
-		assert(flags[`NEG] == 0) else $error ("SUB failed NEG");
-		assert(flags[`ZER] == 1) else $error ("SUB failed ZER");
-		assert(flags[`CAR] == 0) else $error ("SUB failed CAR");
+		assert(flags[`NEG] == 1) else $error ("SUB failed NEG");
+		assert(flags[`ZER] == 0) else $error ("SUB failed ZER");
+		assert(flags[`CAR] == 1) else $error ("SUB failed CAR");
 		assert(flags[`OVR] == 0) else $error ("SUB failed OVR");		
 		
+		$display("ALU TB finished running.")
 		
 	end
 	
