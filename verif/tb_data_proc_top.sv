@@ -7,8 +7,6 @@ module tb_data_proc_top();
     logic MemWrite;
 	logic [31:0] PC;
 	
-	reg[5:0] count;
-
 
     // instantiate device to be tested
     data_proc_top dut(clk, reset, DataAdr, WriteData, MemWrite, PC);
@@ -17,7 +15,6 @@ module tb_data_proc_top();
     // initialize test
     initial
     begin
-		count <= 0;
         reset <= 1; # 10; reset <= 0;
     end
 
@@ -31,13 +28,12 @@ module tb_data_proc_top();
     // at end of program
     always @(negedge clk)
     begin
-		count ++;
-		if(count == 8) begin
-			$display("DataProc Pass");
+		if(PC>>2 >= 6) begin //upperbound on clock cycles
+			$display("DataProc Limit Reached");
 			$stop;
 		end
         if(MemWrite) begin
-			$display("Simulation failed at C:%d PC:%d", count, PC);
+			$display("Simulation failed at PC:%d", PC);
 			$stop;
         end
     end

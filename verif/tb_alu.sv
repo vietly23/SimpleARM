@@ -44,24 +44,24 @@ module tb_alu();
 
 		a = 32'd12; b = 32'd7; opcode = `SUB; #10;
 		assert(out == 32'd5) else $error ("SUB failed");
-		assert(flags[`NEG] == 0) else $error ("SUB failed");
-		assert(flags[`ZER] == 0) else $error ("SUB failed");
-		assert(flags[`CAR] == 0) else $error ("SUB failed");
-		assert(flags[`OVR] == 0) else $error ("SUB failed");
+		assert(flags[`NEG] == 0) else $error ("SUB failed NEG");
+		assert(flags[`ZER] == 0) else $error ("SUB failed ZER");
+		assert(flags[`CAR] == 0) else $error ("SUB failed CAR");
+		assert(flags[`OVR] == 0) else $error ("SUB failed OVR");
 
 		a = 32'd7; b = 32'd12; opcode = `SUB; #10;
 		assert(out == -32'd5) else $error ("SUB failed");
-		assert(flags[`NEG] == 1) else $error ("SUB failed");
-		assert(flags[`ZER] == 0) else $error ("SUB failed");
-		assert(flags[`CAR] == 0) else $error ("SUB failed");
-		assert(flags[`OVR] == 0) else $error ("SUB failed");
+		assert(flags[`NEG] == 1) else $error ("SUB failed NEG");
+		assert(flags[`ZER] == 0) else $error ("SUB failed ZER");
+		assert(flags[`CAR] == 0) else $error ("SUB failed CAR");
+		assert(flags[`OVR] == 0) else $error ("SUB failed OVR");
 
 		a = 32'd7; b = 32'd17; opcode = `SUB; #10;
 		assert(out == 32'd0) else $error ("SUB failed");
-		assert(flags[`NEG] == 0) else $error ("SUB failed");
-		assert(flags[`ZER] == 1) else $error ("SUB failed");
-		assert(flags[`CAR] == 0) else $error ("SUB failed");
-		assert(flags[`OVR] == 0) else $error ("SUB failed");		
+		assert(flags[`NEG] == 0) else $error ("SUB failed NEG");
+		assert(flags[`ZER] == 1) else $error ("SUB failed ZER");
+		assert(flags[`CAR] == 0) else $error ("SUB failed CAR");
+		assert(flags[`OVR] == 0) else $error ("SUB failed OVR");		
 		
 		
 	end
