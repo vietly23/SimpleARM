@@ -49,9 +49,13 @@ module datapath(input logic clk, reset,
 		SrcA, WriteData, RD3); 
 
 	mux #(32) resmux(ALUResult, ReadData, MemtoReg, Result); 
-	extend ext(Instr[23:0], ImmSrc, ExtImm);
+	mux #(32) resmux(Result, PCPlus4, MemToReg, Result); // Branch and Link
+ 	extend ext(Instr[23:0], ImmSrc, ExtImm);
 	// ALU logic 
 	// CHANGED FOR SHIFTER MUX -- IMPORTANT
 	mux #(32) srcbmux(shift_out, ExtImm, ALUSrc, SrcB); 
 	alu alu(SrcA, SrcB, storedCarry, ALUControl, ALUResult, ALUFlags); 
+	
+	
+	
 endmodule

@@ -58,14 +58,14 @@ module tb_alu();
 		assert(flags[`CAR] == 1) else $error ("SUB failed CAR"); 
 		assert(flags[`OVR] == 0) else $error ("SUB failed OVR");
 
-		a = 32'd7; b = 32'd17; opcode = `SUB; #10;
+		a = 32'd7; b = 32'd7; opcode = `SUB; #10;
 		assert(out == 32'd0) else $error ("SUB failed");
-		assert(flags[`NEG] == 1) else $error ("SUB failed NEG");
-		assert(flags[`ZER] == 0) else $error ("SUB failed ZER");
-		assert(flags[`CAR] == 1) else $error ("SUB failed CAR");
+		assert(flags[`NEG] == 0) else $error ("SUB failed NEG");
+		assert(flags[`ZER] == 1) else $error ("SUB failed ZER");
+		assert(flags[`CAR] == 0) else $error ("SUB failed CAR");
 		assert(flags[`OVR] == 0) else $error ("SUB failed OVR");		
 		
-		$display("ALU TB finished running.")
+		$display("ALU TB finished running.");
 		
 	end
 	
