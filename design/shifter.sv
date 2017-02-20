@@ -8,7 +8,7 @@ case(opcode)
 	3'b000: a_out = a << shift;
 	// LSR
 	3'b001: a_out = a >> shift;
-	//ROR
+	// ROR
 	3'b010: a_out = (a << shift) | (a >> ~shift);
 	// ASR
 	3'b011: begin
@@ -17,7 +17,7 @@ case(opcode)
 		else 
 			a_out = a >> shift;
 	end
-	default a_out = 32'h000000;
+	default a_out = a;
 endcase
 end
 endmodule
