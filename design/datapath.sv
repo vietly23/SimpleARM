@@ -29,8 +29,12 @@ module datapath(input logic clk, reset,
 		Instr[15:12], Result, PCPlus8, 
 		SrcA, WriteData); 
 	mux #(32) resmux(ALUResult, ReadData, MemtoReg, Result); 
-	extend ext(Instr[23:0], ImmSrc, ExtImm);
+	mux #(32) resmux(Result, PCPlus4, MemToReg, Result); // Branch and Link
+ 	extend ext(Instr[23:0], ImmSrc, ExtImm);
 	// ALU logic 
 	mux #(32) srcbmux(WriteData, ExtImm, ALUSrc, SrcB); 
 	alu alu(SrcA, SrcB, storedCarry, ALUControl, ALUResult, ALUFlags); 
+	
+	
+	
 endmodule
