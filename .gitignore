@@ -4,4 +4,6 @@
 **transcript
 *.wlf
 *.log
+**.tar
+**.gz
 default.svf
