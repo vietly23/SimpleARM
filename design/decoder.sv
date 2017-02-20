@@ -3,35 +3,36 @@ module decoder(input logic [1:0] Op,
 	input logic [3:0] Rd, 
 	output logic [3:0] FlagW, //which flags to write
 	output logic PCS, RegW, MemW, 
-	output logic MemtoReg, ALUSrc, 
+	output logic MemtoReg, ALUSrc,
+	output logic linkSelect,
 	output logic [1:0] ImmSrc, RegSrc,
 	output logic [3:0] ALUControl);
 
-	logic [9:0] controls; 
+	logic [10:0] controls; 
 	logic Branch, ALUOp;
 
 	// Main Decoder 
 	always_comb 
 		casex(Op)
-	// Data-processing immediate 
-			2'b00: if (Funct[5]) controls = 10'b0000101001; 
+			// Data-processing immediate 
+			2'b00: if (Funct[5]) controls = 10'b00001010010; 
 			// Data-processing register 
-				else controls = 10'b0000001001; 
+				else controls = 10'b00000010010; 
 				// LDR 
-			2'b01: if (Funct[0]) controls = 10'b0001111000; 
+			2'b01: if (Funct[0]) controls = 10'b00011110000; 
 				// STR 
-				else controls = 10'b1001110100; 
+				else controls = 10'b10011101000; 
 				// B 
-			2'b10: controls = 10'b0110100010; 
+			2'b10: controls = 10'b01101000100;
 				// B & L
-			2'b11: controls = 10'b0110100010;
+			2'b11: controls = 10'b01101000101;
 					
 				// Unimplemented 
 			default: controls = 10'bx; 
 		endcase
 
 	assign {RegSrc, ImmSrc, ALUSrc, MemtoReg, 
-		RegW, MemW, Branch, ALUOp} = controls;
+		RegW, MemW, Branch, ALUOp, linkSelect} = controls;
 
 	//Copy paste from alu.sv - make sure this is synchd
 	`define AND 4'h0
