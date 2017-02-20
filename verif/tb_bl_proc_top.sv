@@ -1,5 +1,5 @@
 
-module tb_data_proc_top();
+module tb_bl_proc_top();
     logic clk;
     logic reset;
     logic [31:0] DataAdr;

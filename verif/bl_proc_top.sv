@@ -1,4 +1,4 @@
-module data_proc_top(
+module bl_proc_top(
     input  logic clk, reset,
     output logic [31:0] DataAdr,
     output logic [31:0] WriteData,

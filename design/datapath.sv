@@ -3,6 +3,7 @@ module datapath(input logic clk, reset,
 		input logic  RegWrite, 
 		input logic  [1:0] ImmSrc, 
 		input logic  ALUSrc, 
+		input logic linkSelect,
 		input logic  [3:0] ALUControl, 
 		input logic  MemtoReg, 
 		input logic  PCSrc, 
@@ -14,7 +15,7 @@ module datapath(input logic clk, reset,
 		input logic  storedCarry);
 
 	logic [31:0] PCNext, PCPlus4, PCPlus8; 
-	logic [31:0] ExtImm, SrcA, SrcB, Result; 
+	logic [31:0] ExtImm, SrcA, SrcB, Result, BLResult; 
 	logic [3:0] RA1, RA2;
 
 	// NEEDS TO BE HOOKED UP
@@ -45,11 +46,11 @@ module datapath(input logic clk, reset,
 
 	// RA3 is NOT hooked up -- IMPORTANT
 	regfile rf(clk, RegWrite, RA1, RA2, RA3 
-		Instr[15:12], Result, PCPlus8, 
+		Instr[15:12], BLResult, PCPlus8, 
 		SrcA, WriteData, RD3); 
 
 	mux #(32) resmux(ALUResult, ReadData, MemtoReg, Result); 
-	mux #(32) resmux(Result, PCPlus4, MemToReg, Result); // Branch and Link
+	mux #(32) blmux(Result, PCPlus4, linkSelect, BLResult); // Branch and Link
  	extend ext(Instr[23:0], ImmSrc, ExtImm);
 	// ALU logic 
 	// CHANGED FOR SHIFTER MUX -- IMPORTANT
