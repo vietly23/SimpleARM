@@ -13,10 +13,6 @@ module datapath(input logic clk, reset,
 		output logic [31:0] ALUResult, WriteData, 
 		input logic  [31:0] ReadData,
 		input logic  storedCarry,
-		//select between R3 and shift_imm
-		input logic regOrRegShift,
-		//select between rotate_imm<<1 and registerShiftout
-		input logic immOrReg,
 		//kind of shift
 		logic [2:0] shiftOp);
 
@@ -34,9 +30,9 @@ module datapath(input logic clk, reset,
 	logic[4:0] regShiftMuxOut;
 	
 	//pick between RS(R3) or shift_imm
-	mux #(4) regShiftMux(RD3[4:0], Instr[11:7], regOrRegShift, regShiftMuxOut); 
-	//pick between rotate_imm or regShiftMuxOut
-	mux #(4) regShiftMux({Instr[11:8],0}, regShiftMuxOut, immOrReg, shiftAmt); 
+	mux #(5) regShiftMux(RD3[4:0], Instr[11:7], Instr[4] , regShiftMuxOut); 
+	//pick between rotate_imm << 1 or regShiftMuxOut
+	mux #(5) regShiftMux({Instr[11:8],0}, regShiftMuxOut, Instr[25], shiftAmt); 
 `
 	// TAKES Result from REGISTERFILE and shifts it
 	shifter shifter(.a(SrcB), .opcode(shiftOp), .carryIn(storedCarry), .shift( shiftAmt) , .a_out(shiftOut), .carryOut(shiftCarry));
