@@ -13,9 +13,9 @@ module datapath(input logic clk, reset,
 		output logic [31:0] ALUResult, WriteData, 
 		input logic  [31:0] ReadData,
 		input logic  storedCarry,
-		//select between rotate_imm<<1 and registerShiftout
-		input logic regOrRegShift,
 		//select between R3 and shift_imm
+		input logic regOrRegShift,
+		//select between rotate_imm<<1 and registerShiftout
 		input logic immOrReg,
 		//kind of shift
 		logic [2:0] shiftOp);
