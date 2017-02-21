@@ -12,26 +12,34 @@ module datapath(input logic clk, reset,
 		input logic  [31:0] Instr, 
 		output logic [31:0] ALUResult, WriteData, 
 		input logic  [31:0] ReadData,
-		input logic  storedCarry);
+		input logic  storedCarry,
+		//select between rotate_imm<<1 and registerShiftout
+		input logic regOrRegShift,
+		//select between R3 and shift_imm
+		input logic immOrReg,
+		//kind of shift
+		logic [2:0] shiftOp);
 
 	logic [31:0] PCNext, PCPlus4, PCPlus8; 
 	logic [31:0] ExtImm, SrcA, SrcB, Result, BLResult; 
 	logic [3:0] RA1, RA2;
 
-	// NEEDS TO BE HOOKED UP
-	// --------------------------------
-	logic [3:0] RA3;
+	// For shift instructions
 	logic [31:0] RD3;
-	logic shift_choice;
-	logic [2:0] shift_code;
-	logic [4:0] controller_shift;
-	logic [4:0] shift_amt;
-	logic [31:0] shift_out;
 
-	mux #5 shift_mux(RD3[4:0], controller_shift, shift_choice, shift_amt)
+	logic [4:0] shiftAmt;
+	logic [31:0] shiftOut;
+	logic shiftCarry;
+	
+	logic[4:0] regShiftMuxOut;
+	
+	//pick between RS(R3) or shift_imm
+	mux #(4) regShiftMux(RD3[4:0], Instr[11:7], regOrRegShift, regShiftMuxOut); 
+	//pick between rotate_imm or regShiftMuxOut
+	mux #(4) regShiftMux({Instr[11:8],0}, regShiftMuxOut, immOrReg, shiftAmt); 
 `
 	// TAKES Result from REGISTERFILE and shifts it
-	shifter m_shift(Result, shift_code, shift_amt, shift_out);
+	shifter shifter(.a(SrcB), .opcode(shiftOp), .carryIn(storedCarry), .shift( shiftAmt) , .a_out(shiftOut), .carryOut(shiftCarry));
 	// ----------------------------------
 
 	// next PC logic 
@@ -44,8 +52,7 @@ module datapath(input logic clk, reset,
 	mux #(4) ra1mux(Instr[19:16], 4'b1111, RegSrc[0], RA1); 
 	mux #(4) ra2mux(Instr[3:0], Instr[15:12], RegSrc[1], RA2); 
 
-	// RA3 is NOT hooked up -- IMPORTANT
-	regfile rf(clk, RegWrite, RA1, RA2, RA3 
+	regfile rf(clk, RegWrite, RA1, RA2, Instr[11:8], 
 		Instr[15:12], BLResult, PCPlus8, 
 		SrcA, WriteData, RD3); 
 
@@ -53,9 +60,8 @@ module datapath(input logic clk, reset,
 	mux #(32) blmux(Result, PCPlus4, linkSelect, BLResult); // Branch and Link
  	extend ext(Instr[23:0], ImmSrc, ExtImm);
 	// ALU logic 
-	// CHANGED FOR SHIFTER MUX -- IMPORTANT
-	mux #(32) srcbmux(shift_out, ExtImm, ALUSrc, SrcB); 
-	alu alu(SrcA, SrcB, storedCarry, ALUControl, ALUResult, ALUFlags); 
+	mux #(32) srcbmux(WriteData, ExtImm, ALUSrc, SrcB); 
+	alu alu(SrcA, shiftOut, storedCarry, ALUControl, ALUResult, ALUFlags); 
 	
 	
 	
