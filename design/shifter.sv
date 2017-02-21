@@ -1,21 +1,33 @@
 module shifter (input logic[31:0] a,
 		input logic[2:0] opcode,
+		input logic carryIn,
 		input logic[4:0] shift,
-		output logic[31:0] a_out);
+		output logic[31:0] a_out,
+		output logic carryOut);
+		
+		
+`define LSL 3'h0
+`define LSR 3'h1
+`define ASR 3'h2
+`define ROR 3'h3
+`define RRX 3'h4
+		
 always @* begin
+carryOut = 1b'0; //default 0
 case(opcode)
-	// LSL
-	3'b000: a_out = a << shift;
-	// LSR
-	3'b001: a_out = a >> shift;
-	// ROR
-	3'b010: a_out = (a << shift) | (a >> ~shift);
-	// ASR
-	3'b011: begin
+	`LSL: a_out = a << shift;
+	`LSR: a_out = a >> shift;
+	`ROR: a_out = (a << shift) | (a >> ~shift);
+	`ASR: begin
 		if (a[31]) 
 			a_out = (a >> shift) | (32'hFFFFFFFF << ~shift);
 		else 
 			a_out = a >> shift;
+	end
+	`RRX: begin
+		a_out[31] = carryIn;
+		a_out[30:0] = (a >> 1)[30:0];
+		carryOut = a[0];
 	end
 	default a_out = a;
 endcase
