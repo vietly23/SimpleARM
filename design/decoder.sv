@@ -1,16 +1,39 @@
 module decoder(input logic [1:0] Op, 
 	input logic [5:0] Funct, 
-	input logic [3:0] Rd, 
+	input logic [3:0] Rd,
+	input logic [11:4] Instr,
 	output logic [3:0] FlagW, //which flags to write
 	output logic PCS, RegW, MemW, 
 	output logic MemtoReg, ALUSrc,
 	output logic linkSelect,
 	output logic [1:0] ImmSrc, RegSrc,
-	output logic [3:0] ALUControl);
+	output logic [3:0] ALUControl,
+	output logic [2:0] shiftOp,
+	output logic registerShift);
 
 	logic [10:0] controls; 
 	logic Branch, ALUOp;
 
+	//Copy paste opcodes from shifter
+	`define LSL 3'h0
+	`define LSR 3'h1
+	`define ASR 3'h2
+	`define ROR 3'h3
+	`define RRX 3'h4
+	
+	
+	//shift decoder
+	always_comb 
+		if(Funct[5]) shiftOp  =  `ROR;
+		else begin
+			if (  (~(Instr[11:7] | Instr[4])) & Instr[6:5]) shiftOp = `RRX;
+			else shiftOp = {0,Instr[6:5];
+		end
+	
+	//pick between register and register shifted register 
+	assign registerShift = Instr[4] & ~Instr[7];
+	
+	
 	// Main Decoder 
 	always_comb 
 		casex(Op)
