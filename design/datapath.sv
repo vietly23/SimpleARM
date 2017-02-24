@@ -35,8 +35,8 @@ module datapath(input logic clk, reset,
 	//pick between RS(R3) or shift_imm
 	mux #(5) regShiftMux(Instr[11:7], RD3[4:0],  registerShift , regShiftMuxOut); 
 	//pick between rotate_imm << 1 or regShiftMuxOut
-	mux #(5) regShiftMux(regShiftMuxOut, {Instr[11:8],0}, Instr[25], shiftAmt); 
-`
+	mux #(5) immShiftMux(regShiftMuxOut, {Instr[11:8],1'b0}, Instr[25], shiftAmt); 
+
 	// TAKES Result from REGISTERFILE and shifts it
 	shifter shifter(.a(SrcB), .opcode(shiftOp), .carryIn(storedCarry), .shift( shiftAmt) , .a_out(shiftOut), .carryOut(shiftCarry));
 	// ----------------------------------

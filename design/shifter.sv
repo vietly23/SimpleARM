@@ -13,7 +13,7 @@ module shifter (input logic[31:0] a,
 `define RRX 3'h4
 		
 always @* begin
-carryOut = 1b'0; //default 0
+carryOut = 1'b0; //default 0
 case(opcode)
 	`LSL: a_out = a << shift;
 	`LSR: a_out = a >> shift;
@@ -26,7 +26,7 @@ case(opcode)
 	end
 	`RRX: begin
 		a_out[31] = carryIn;
-		a_out[30:0] = (a >> 1)[30:0];
+		a_out[30:0] = a[31:1];
 		carryOut = a[0];
 	end
 	default a_out = a;
