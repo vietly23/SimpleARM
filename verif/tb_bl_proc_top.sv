@@ -9,7 +9,7 @@ module tb_bl_proc_top();
 	
 
     // instantiate device to be tested
-    data_proc_top dut(clk, reset, DataAdr, WriteData, MemWrite, PC);
+    bl_proc_top dut(clk, reset, DataAdr, WriteData, MemWrite, PC);
 
 
     // initialize test
@@ -31,6 +31,10 @@ module tb_bl_proc_top();
 		if(PC>>2 >= 6) begin //upperbound on clock cycles
 			$display("DataProc Limit Reached");
 			$stop;
+		// still need to check this
+		
+		// two things: check if it branches
+		// then, add an instruction below: and check that it doesn't affect that
 		
 		end
         if(MemWrite) begin
