@@ -1,4 +1,4 @@
-module tb_top();
+module tb_new_top();
     logic clk;
     logic reset;
     logic [31:0] WriteData, DataAdr;
@@ -6,7 +6,7 @@ module tb_top();
 
 
     // instantiate device to be tested
-    top dut(clk, reset, WriteData, DataAdr, MemWrite);
+    new_top dut(clk, reset, WriteData, DataAdr, MemWrite);
 
 
     // initialize test
