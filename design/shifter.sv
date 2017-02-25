@@ -14,7 +14,6 @@ module shifter (input logic[31:0] a,
 		
 always @* begin
 carryOut = carryIn; //default
-assert(opcode >= 0 & opcode <=5);
 case(opcode)
 	`LSL: a_out = a << shift;
 	`LSR: a_out = a >> shift;
