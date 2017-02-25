@@ -28,18 +28,16 @@ module tb_bl_proc_top();
     // at end of program
     always @(negedge clk)
     begin
-		if(PC>>2 >= 6) begin //upperbound on clock cycles
-			$display("DataProc Limit Reached");
-			$stop;
+		if(PC>>2 >= 4) begin //upperbound on clock cycles
+			if (tb_bl_proc_top.dut.arm.dp.rf.rf[14] == 1)
+				if (WriteData == -8)
+					$display("Success");
+					$stop;
+				end
+			end
 		// still need to check this
 		
-		// two things: check if it branches
-		// then, add an instruction below: and check that it doesn't affect that
-		
 		end
-        if(MemWrite) begin
-			$display("Simulation failed at PC:%d", PC);
-			$stop;
-        end
+ 
     end
 endmodule
