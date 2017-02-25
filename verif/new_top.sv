@@ -13,7 +13,7 @@ module new_top(
     // instantiate processor and memories
     arm  arm(clk, reset, PC, Instr, MemWrite, DataAdr, WriteData, ReadData);
     
-    tb_new_mem imem(PC, Instr);
+    newtb_mem imem(PC, Instr);
     
 	
     dmem dmem(clk, MemWrite, DataAdr, WriteData, ReadData);
