@@ -17,7 +17,7 @@ module imem (
 	assign RAM [9] = 32'hE0538004 ; //SUBS R8, R3, R4 
 	assign RAM [10] = 32'hAA000000 ;// BGE AROUND 
 	assign RAM [11] = 32'hE2805000 ;// ADD R5, R0 #0
-	assign RAM [12] = 32'hE0578002 ; // SUBS R8, R7, R2
+	assign RAM [12] = 32'hE0578002 ; // SUBS R8, R7, R2 AROUND
 	assign RAM [13] = 32'hB2857001 ;// ADDLT R7, R5, #1
 	assign RAM [14] = 32'hE0477002 ;// SUB R7,R7,R2
 	assign RAM [15] = 32'hE5837054 ;// STR R7, [R3, #84] 

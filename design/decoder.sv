@@ -22,42 +22,39 @@ module decoder(input logic [1:0] Op,
 	`define RRX 3'h4
 	
 	
-	//shift decoder
-	// check for the rrx special case, if not
-	// then pad the shift part of Instr and pass to shifter
-	// immediate mode cases are handled by mux in datapath
-	always_comb 
-		if(Funct[5]) begin
-			shiftOp  =  `ROR;
-		end
-		else begin
-			if (  (~(Instr[11:7] | Instr[4])) & Instr[6:5]) shiftOp = `RRX;
-			else shiftOp = {1'b0,Instr[6:5]};
-		end
-	
 	//pick between register and register shifted register 
 	assign registerShift = Instr[4] & ~Instr[7];
 	
 	
 	// Main Decoder 
 	always_comb 
-		casex(Op)
-			// Data-processing immediate 
-			2'b00: if (Funct[5]) controls = 11'b00001010010; 
-			// Data-processing register 
-				else controls = 11'b00000010010; 
-				// LDR 
-			2'b01: if (Funct[0]) controls = 11'b00011110000; 
-				// STR 
-				else controls = 11'b10011101000; 
-				// B 
-			2'b10: controls = 11'b01101000100;
-				// B & L
-			2'b11: controls = 11'b01101000101;
-					
-				// Unimplemented 
-			default: controls = 11'bx; 
-		endcase
+		begin
+			shiftOp = 3'h5; //undefined shift opcode causing a passthrough
+			casex(Op)
+				// Data-processing immediate 
+				2'b00: if (Funct[5]) begin
+							controls = 11'b00001010010; 
+							shiftOp  =  `ROR;
+						end
+				// Data-processing register 
+					else begin
+							controls = 11'b00000010010;
+							if (  (~(Instr[11:7] | Instr[4])) & Instr[6:5]) shiftOp = `RRX;
+							else shiftOp = {1'b0,Instr[6:5]};
+						end
+					// LDR 
+				2'b01: if (Funct[0]) controls = 11'b00011110000; 
+					// STR 
+					else controls = 11'b10011101000; 
+					// B 
+				2'b10: controls = 11'b01101000100;
+					// B & L
+				2'b11: controls = 11'b01101000101;
+						
+					// Unimplemented 
+				default: controls = 11'bx; 
+			endcase
+		end
 
 	assign {RegSrc, ImmSrc, ALUSrc, MemtoReg, 
 		RegW, MemW, Branch, ALUOp, linkSelect} = controls;
