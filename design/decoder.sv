@@ -1,35 +1,60 @@
 module decoder(input logic [1:0] Op, 
 	input logic [5:0] Funct, 
-	input logic [3:0] Rd, 
+	input logic [3:0] Rd,
+	input logic [11:4] Instr,
 	output logic [3:0] FlagW, //which flags to write
 	output logic PCS, RegW, MemW, 
 	output logic MemtoReg, ALUSrc,
 	output logic linkSelect,
 	output logic [1:0] ImmSrc, RegSrc,
-	output logic [3:0] ALUControl);
+	output logic [3:0] ALUControl,
+	output logic [2:0] shiftOp,
+	output logic registerShift);
 
 	logic [10:0] controls; 
 	logic Branch, ALUOp;
 
+	//Copy paste opcodes from shifter
+	`define LSL 3'h0
+	`define LSR 3'h1
+	`define ASR 3'h2
+	`define ROR 3'h3
+	`define RRX 3'h4
+	
+	
+	//pick between register and register shifted register 
+	assign registerShift = Instr[4] & ~Instr[7];
+	
+	
 	// Main Decoder 
 	always_comb 
-		casex(Op)
-			// Data-processing immediate 
-			2'b00: if (Funct[5]) controls = 10'b00001010010; 
-			// Data-processing register 
-				else controls = 10'b00000010010; 
-				// LDR 
-			2'b01: if (Funct[0]) controls = 10'b00011110000; 
-				// STR 
-				else controls = 10'b10011101000; 
-				// B 
-			2'b10: controls = 10'b01101000100;
-				// B & L
-			2'b11: controls = 10'b01101000101;
-					
-				// Unimplemented 
-			default: controls = 10'bx; 
-		endcase
+		begin
+			shiftOp = 3'h5; //undefined shift opcode causing a passthrough
+			casex(Op)
+				// Data-processing immediate 
+				2'b00: if (Funct[5]) begin
+							controls = 11'b00001010010; 
+							shiftOp  =  `ROR;
+						end
+				// Data-processing register 
+					else begin
+							controls = 11'b00000010010;
+							if (  (~(Instr[11:7] | Instr[4])) & Instr[6:5]) shiftOp = `RRX;
+							else shiftOp = {1'b0,Instr[6:5]};
+						end
+					// LDR 
+				2'b01: if (Funct[0]) controls = 11'b00011110000; 
+					// STR 
+					else controls = 11'b10011101000; 
+					// B 
+				2'b10: controls = 11'b01101000100;
+					// B & L
+				2'b11: controls = 11'b01101000101;
+						
+					// Unimplemented 
+				default: controls = 11'bx; 
+			endcase
+		end
 
 	assign {RegSrc, ImmSrc, ALUSrc, MemtoReg, 
 		RegW, MemW, Branch, ALUOp, linkSelect} = controls;

@@ -3,7 +3,7 @@ module datapath(input logic clk, reset,
 		input logic  RegWrite, 
 		input logic  [1:0] ImmSrc, 
 		input logic  ALUSrc, 
-		input logic linkSelect,
+		input logic  linkSelect,
 		input logic  [3:0] ALUControl, 
 		input logic  MemtoReg, 
 		input logic  PCSrc, 
@@ -14,7 +14,9 @@ module datapath(input logic clk, reset,
 		input logic  [31:0] ReadData,
 		input logic  storedCarry,
 		//kind of shift
-		logic [2:0] shiftOp);
+		input logic [2:0] shiftOp,
+		input logic registerShift);
+		//Instr[25] will need to be passed in pipeline to control a shiftmux
 
 	logic [31:0] PCNext, PCPlus4, PCPlus8; 
 	logic [31:0] ExtImm, SrcA, SrcB, Result, BLResult; 
@@ -29,11 +31,12 @@ module datapath(input logic clk, reset,
 	
 	logic[4:0] regShiftMuxOut;
 	
+	
 	//pick between RS(R3) or shift_imm
-	mux #(5) regShiftMux(RD3[4:0], Instr[11:7], Instr[4] , regShiftMuxOut); 
+	mux #(5) regShiftMux(Instr[11:7], RD3[4:0],  registerShift , regShiftMuxOut); 
 	//pick between rotate_imm << 1 or regShiftMuxOut
-	mux #(5) regShiftMux({Instr[11:8],0}, regShiftMuxOut, Instr[25], shiftAmt); 
-`
+	mux #(5) immShiftMux(regShiftMuxOut, {Instr[11:8],1'b0}, Instr[25], shiftAmt); 
+
 	// TAKES Result from REGISTERFILE and shifts it
 	shifter shifter(.a(SrcB), .opcode(shiftOp), .carryIn(storedCarry), .shift( shiftAmt) , .a_out(shiftOut), .carryOut(shiftCarry));
 	// ----------------------------------
