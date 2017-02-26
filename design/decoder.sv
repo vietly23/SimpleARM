@@ -10,7 +10,6 @@ module decoder(input logic [1:0] Op,
 	output logic [3:0] ALUControl,
 	output logic [2:0] shiftOp,
 	output logic registerShift,
-	output logic [3:0] be,
 	output logic [2:0] memSelect);
 
 	logic [10:0] controls; 
