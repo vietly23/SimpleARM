@@ -28,14 +28,18 @@ module tb_data_proc_top();
     // at end of program
     always @(negedge clk)
     begin
-		if(PC>>2 >= 6) begin //upperbound on clock cycles
-			$display("DataProc Limit Reached");
-			$stop;
-		
-		end
-        if(MemWrite) begin
-			$display("Simulation failed at PC:%d", PC);
-			$stop;
+		if(PC>>2 >= 9) 
+		begin 
+			if ((tb_data_proc_top.dut.arm.dp.rf.rf[9]) == 1)
+				begin
+					$display("Success");
+					$stop;
+				end
+				else
+				begin
+					$display("Fail");
+					$stop;
+				end
         end
     end
 endmodule

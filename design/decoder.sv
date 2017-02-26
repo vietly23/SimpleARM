@@ -41,6 +41,7 @@ module decoder(input logic [1:0] Op,
 		begin
 			shiftOp = 3'h5; //undefined shift opcode causing a passthrough
 			RegWMask = 1'b1; //default value -- doesn't do anything
+			loadSigned = 1'b0; //default value - unsigned loading
 			casex(Op)
 				// Data-processing immediate 
 				2'b00: begin
