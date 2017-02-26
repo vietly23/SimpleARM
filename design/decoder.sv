@@ -9,7 +9,9 @@ module decoder(input logic [1:0] Op,
 	output logic [1:0] ImmSrc, RegSrc,
 	output logic [3:0] ALUControl,
 	output logic [2:0] shiftOp,
-	output logic registerShift);
+	output logic registerShift,
+	output logic [3:0] be,
+	output logic [2:0] memSelect);
 
 	logic [10:0] controls; 
 	logic Branch, ALUOp;
@@ -20,6 +22,12 @@ module decoder(input logic [1:0] Op,
 	`define ASR 3'h2
 	`define ROR 3'h3
 	`define RRX 3'h4
+
+	logic [1:0] enableSelect;
+	logic loadSigned;
+	`define BYTE 2'h0
+	`define HALF 2'h1
+	`define WORD 2'h2
 	
 	
 	//pick between register and register shifted register 
@@ -42,10 +50,29 @@ module decoder(input logic [1:0] Op,
 							if (  (~(Instr[11:7] | Instr[4])) & Instr[6:5]) shiftOp = `RRX;
 							else shiftOp = {1'b0,Instr[6:5]};
 						end
-					// LDR 
-				2'b01: if (Funct[0]) controls = 11'b00011110000; 
-					// STR 
-					else controls = 11'b10011101000; 
+				2'b01: if(Funct[2]) begin
+                  if(Funct[0]) begin
+                    // Load Byte
+                    enableSelect = `BYTE;
+                    controls = 11'b00011110000;
+                  end
+                  else begin
+                    //Store byte
+                    enableSelect = `BYTE;
+                    controls = 11'b10011101000;
+                  end 
+			        end
+			        //Word
+			        else begin
+          				if(Funct[0]) begin
+		                    enableSelect = `WORD;
+		                    controls = 11'b00011110000;
+                  		end
+		                else begin
+		                  enableSelect = `WORD;
+		                  controls = 11'b10011101000;
+                  end
+        end
 					// B 
 				2'b10: controls = 11'b01101000100;
 					// B & L
@@ -56,6 +83,7 @@ module decoder(input logic [1:0] Op,
 			endcase
 		end
 
+	assign memSelect = {loadSigned,enableSelect};
 	assign {RegSrc, ImmSrc, ALUSrc, MemtoReg, 
 		RegW, MemW, Branch, ALUOp, linkSelect} = controls;
 
