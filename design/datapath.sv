@@ -20,7 +20,7 @@ module datapath(input logic clk, reset,
 
 	logic [31:0] PCNext, PCPlus4, PCPlus8; 
 	logic [31:0] ExtImm, SrcA, SrcB, Result, BLResult; 
-	logic [3:0] RA1, RA2;
+	logic [3:0] RA1, RA2, BLAmuxOut;
 
 	// For shift instructions
 	logic [31:0] RD3;
@@ -51,12 +51,13 @@ module datapath(input logic clk, reset,
 	mux #(4) ra1mux(Instr[19:16], 4'b1111, RegSrc[0], RA1); 
 	mux #(4) ra2mux(Instr[3:0], Instr[15:12], RegSrc[1], RA2); 
 
-	regfile rf(clk, RegWrite, RA1, RA2, Instr[11:8], 
-		Instr[15:12], BLResult, PCPlus8, 
-		SrcA, WriteData, RD3); 
+	regfile rf(.clk(clk), .we3(RegWrite), .ra1(RA1), .ra2(RA2), .ra3(Instr[11:8]), 
+		.wa3(BLAmuxOut), .wd3(BLResult), .r15(PCPlus8), 
+		.rd1(SrcA), .rd2(WriteData), .rd3(RD3)); 
 
 	mux #(32) resmux(ALUResult, ReadData, MemtoReg, Result); 
-	mux #(32) blmux(Result, PCPlus4, linkSelect, BLResult); // Branch and Link
+	mux #(32) bldmux(Result, PCPlus4, linkSelect, BLResult); // Branch and Link
+	mux #(4) blamux(Instr[15:12], 4'b1110, linkSelect, BLAmuxOut); // Branch and Link
  	extend ext(Instr[23:0], ImmSrc, ExtImm);
 	// ALU logic 
 	mux #(32) srcbmux(WriteData, ExtImm, ALUSrc, SrcB); 
