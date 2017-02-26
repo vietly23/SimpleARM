@@ -17,7 +17,7 @@ carryOut = carryIn; //default
 case(opcode)
 	`LSL: a_out = a << shift;
 	`LSR: a_out = a >> shift;
-	`ROR: a_out = (a << shift) | (a >> ~shift);
+	`ROR: a_out = (a << shift) | (a >> (32-shift));
 	`ASR: begin
 		if (a[31]) 
 			a_out = (a >> shift) | (32'hFFFFFFFF << ~shift);
