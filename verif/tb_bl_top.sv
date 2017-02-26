@@ -32,8 +32,8 @@ module tb_bl_top();
 		begin
 			$display("RF WE:%d RF WA:%d RF RD:%d",tb_bl_top.dut.arm.dp.rf.we3, tb_bl_top.dut.arm.dp.rf.wa3, tb_bl_top.dut.arm.dp.rf.wd3);
 		end
-		
-		if(PC>>2 >= 4) 
+		// check BL
+		if(PC>>2 == 4) 
 		begin //upperbound on clock cycles
 			if ((tb_bl_top.dut.arm.dp.rf.rf[14])>>2 == 1)
 			begin
@@ -45,7 +45,22 @@ module tb_bl_top();
 				$display("Fail");
 				$stop;
 			end
-		// still need to check this
+		end
+		// check B
+		if (PC>>2 == 9)
+			
+		begin 
+			if (tb_bl_top.dut.arm.dp.rf.wd3 >> 2 == 1)
+			begin 
+				$display("Success");
+				$stop;
+			end
+			else
+			begin
+				$display("Fail");
+				$stop;
+			end
+		
 		
 		end
  
