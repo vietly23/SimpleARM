@@ -13,6 +13,16 @@ module data_proc_mem (
 	assign RAM [4] = 32'h0A000000 ; //BEQ : Skip next instruction
 	assign RAM [5] = 32'hE5802064 ; //mem[100] = 4 : assert mem[100]!=4 in tb (this is skipped)
 	assign RAM [6] = 32'hE1710002 ; //CMN R1, R2
+
+	assign RAM[7 ] = 32'hE3A09000; // MOV R9, #0
+	assign RAM[8 ] = 32'hE3A000C8; // MOV R0, #200
+	assign RAM[9 ] = 32'hE3A02014; // MOV R2, #20
+	assign RAM[10] = 32'hE3A03004; // MOV R3, #4
+	assign RAM[11] = 32'hE3A04002; // MOV R4, #2
+	assign RAM[12] = 32'hE7802103; // STR R2,[R0,R3, LSL#2]
+	assign RAM[13] = 32'hE7901103; // LDR R1,[R0,R3, LSL #2]
+	assign RAM[14] = 32'hE1510002; // CMP R1, R2
+	assign RAM[15] = 32'h02899001; // ADDEQ R9, R9, #1 /*Increment pass counter*/
 	
 	
 	
