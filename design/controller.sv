@@ -20,7 +20,7 @@ decoder decoder(.Op(Instr[27:26]), .Funct(Instr[25:20]), .Rd(Instr[15:12]),
 			.Instr(Instr[11:4]), .FlagW(FlagW), .PCS(PCS), .RegW(RegW), .MemW(MemW),
 			.MemtoReg(MemtoReg), .ALUSrc(ALUSrc), .linkSelect(linkSelect),
 			.ImmSrc(ImmSrc), .RegSrc(RegSrc), .ALUControl(ALUControl),
-			.shiftOp(shiftOp), .registerShift(registerShift), memSelect);
+			.shiftOp(shiftOp), .registerShift(registerShift), .memSelect(memSelect));
 cond_logic cond_logic(clk, reset, Instr[31:28], ALUFlags,
 			FlagW, PCS, RegW, MemW,
 			PCSrc, RegWrite, MemWrite, storedCarry);
