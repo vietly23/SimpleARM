@@ -16,13 +16,20 @@ always @* begin
 carryOut = carryIn; //default
 case(opcode)
 	`LSL: a_out = a << shift;
-	`LSR: a_out = a >> shift;
+	`LSR: begin
+			if (shift === 5'b00000) a_out = 32'h00000000;
+			else a_out = a >> shift;
+		  end
 	`ROR: a_out = (a << shift) | (a >> (32-shift));
 	`ASR: begin
-		if (a[31]) 
-			a_out = (a >> shift) | (32'hFFFFFFFF << ~shift);
-		else 
-			a_out = a >> shift;
+		if (shift === 5'b00000) a_out = 32'h00000000;
+		else
+		begin
+			if (a[31]) 
+				a_out = (a >> shift) | (32'hFFFFFFFF << ~shift);
+			else 
+				a_out = a >> shift;
+		end
 	end
 	`RRX: begin
 		a_out[31] = carryIn;

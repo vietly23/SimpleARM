@@ -7,7 +7,7 @@ module tb_new_top();
 
 
     // instantiate device to be tested
-    new_top dut(clk, reset, WriteData, DataAdr, MemWrite, PCO);
+    new_top dut(clk, reset, DataAdr, WriteData, MemWrite, PCO);
 
 
     // initialize test
@@ -30,11 +30,13 @@ module tb_new_top();
             if(DataAdr === 252 &  WriteData === 22) 
             begin
                 $display("Simulation succeeded");
+				$display("RF 9: %d",tb_new_top.dut.arm.dp.rf.rf[9]);
                 $stop;
             end 
             else //if (DataAdr !== 96) 
             begin
                 $display("Simulation failed");
+				$display("RF 9: %d",tb_new_top.dut.arm.dp.rf.rf[9]);
                 $display("your score is %d out of 22", WriteData);
 		$stop;
             end

@@ -53,7 +53,7 @@ module decoder(input logic [1:0] Op,
 							// Data-processing register 
 							else begin
 									controls = 11'b00000010010;
-									if (  (!(Instr[11:7] || Instr[4])) && Instr[6:5]) shiftOp = `RRX;
+									if ( (Instr[11:7] === 5'b0000) && (Instr[4] === 1'b0) && (Instr[6:5] === 2'b11)) shiftOp = `RRX;
 									else shiftOp = {1'b0,Instr[6:5]};
 								end
 							end
