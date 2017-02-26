@@ -15,6 +15,8 @@ module new_top(
     
     newtb_mem imem(PC, Instr);
     
+	newtb_bl  data_proc_mem(PC, Instr);
+	
 	
     dmem dmem(clk, MemWrite, DataAdr, WriteData, ReadData);
     
