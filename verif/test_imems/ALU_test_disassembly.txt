@@ -1,0 +1,96 @@
+E:\Winter 2017\EECS112Lab\Programs_modified>"C:\Program Files (x86)\GNU Tools ARM Embedded\6.2 2016q4\bin\arm-none-eabi-as" -al -EB -march=armv4 ALU_test.s
+ARM GAS  ALU_test.s                     page 1
+
+
+   1                    .text
+   2                    main:
+   3 0000 E3A000AA      MOV  R0,#170 /* 0XAA */
+   4 0004 E3A01055      MOV  R1,#85  /*0X55 */
+   5 0008 E3A020FF      MOV  R2,#255
+   6 000c E3A09000      MOV  R9,#0
+   7                    /*Fill  R3 with AAs */
+   8 0010 E1A03400      LSL  R3,R0,#8
+   9 0014 E1833000      ORR  R3,R3,R0
+  10 0018 E1A03403      LSL  R3,R3,#8
+  11 001c E1833000      ORR  R3,R3,R0
+  12 0020 E1A03403      LSL  R3,R3,#8
+  13 0024 E1833000      ORR  R3,R3,R0
+  14                    /*Fill  r4 with FFs */
+  15 0028 E1A04402      LSL  R4,R2,#8
+  16 002c E1844002      ORR  R4,R4,R2
+  17 0030 E1A04404      LSL  R4,R4,#8
+  18 0034 E1844002      ORR  R4,R4,R2
+  19 0038 E1A04404      LSL  R4,R4,#8
+  20 003c E1844002      ORR  R4,R4,R2
+  21                    /*Fill  R5 with 55S */
+  22 0040 E1A05401      LSL  R5,R1,#8
+  23 0044 E1855001      ORR  R5,R5,R1
+  24 0048 E1A05405      LSL  R5,R5,#8
+  25 004c E1855001      ORR  R5,R5,R1
+  26 0050 E1A05405      LSL  R5,R5,#8
+  27 0054 E1855001      ORR  R5,R5,R1
+  28                    /*AND  check */
+  29 0058 E0036005      AND  R6,R3,R5
+  30 005c E1160004      TST  R6,R4 ;
+  31 0060 02899001      ADDEQ   R9,R9,#1 /*Increment pass count */
+  32                    /*ORR  Check */
+  33 0064 E1836005      ORR  R6,R3,R5
+  34 0068 E3A00000      MOV  R0,#0
+  35 006c E1360000      TEQ  R6,R0
+  36 0070 12899001      ADDNE   R9,R9,#1 /*Incremnt the pass count */
+  37                    /*ADD  check */
+  38 0074 E0836005      ADD  R6,R3,R5
+  39 0078 E0866003      ADD  R6,R6,R3  /* R6 =0xAAAAAAA9 */
+  40 007c E24660A9      SUB  R6,R6,#169 /*substract 0xA9 from R6 */
+  41 0080 E3A000AA      MOV  R0,#170
+  42                    /*Mask  the lower bits of r6 */
+  43 0084 E1866000      ORR  R6,R6,R0  /* R6 =0XAAAAAAAA */
+  44 0088 E1560003      CMP  R6,R3
+  45 008c 02899001      ADDEQ   R9,R9,#1 /*Increment pass count */
+  46                    /*MVN  check */
+  47 0090 E1E06003      MVN  R6,R3    /* R6 = ~R3 */
+  48 0094 E1560005      CMP  R6,R5
+  49 0098 02899001      ADDEQ   R9,R9,#1 /*Increment pass count */
+  50                    /*BIC  Check */
+  51 009c E1C36005      BIC  R6,R3,R5
+  52 00a0 E1560003      CMP  R6,R3
+  53 00a4 02899001      ADDEQ   R9,R9,#1 /*Increment pass count */
+  54                    /*EOR  Check */
+  55 00a8 E0236005      EOR  R6,R3,R5
+  56 00ac E1560004      CMP  R6,R4
+  57 00b0 02899001      ADDEQ   R9,R9,#1 /*Increment pass count */
+ARM GAS  ALU_test.s                    page 2
+
+
+  58                    /*Shift left    check */
+  59 00b4 E1A06403      LSL  r6,r3,#8
+  60 00b8 E0436006      SUB  r6,r3,r6
+  61 00bc E35600AA      CMP  r6,#170
+  62 00c0 02899001      ADDEQ   R9,R9,#1 /*Increment pass count */
+  63
+  64                    /*Rotate        right   check */
+  65 00c4 E1A060E3      ROR  r6,r3,#1
+  66 00c8 E1560005      cmp  r6,r5
+  67 00cc 02899001      ADDEQ   R9,R9,#1 /*Increment pass count*/
+  68
+  69                    /* Comment the rotate section of the code */
+  70                    /*Extend        rotate */
+  71                    /*RRX  R6,R3 */
+  72                    /*ADDCS R9,R9,#1 *//*;Increment pass count */
+  73
+  74
+  75                    /*;Shift        right check */
+  76 00d0 E1A06023      LSR  R6,R3,#32
+  77 00d4 E3560000      cmp  r6,#0
+  78 00d8 02899001      ADDEQ   R9,R9,#1 /*;Increment pass count*/
+  79
+  80
+  81                    /*Pass counter is supposed to be 9 at the end of the program
+  82                    Write the passcount to mem[252]
+  83                    End of program.
+  84                    */
+  85 00dc E3A000FC      mov r0,#252
+  86 00e0 E5809000      str r9,[r0,#0]
+  87
+  88                    loop:
+  89 00e4 EAFFFFFE      B loop

@@ -1,0 +1,48 @@
+E:\Winter 2017\EECS112Lab\Programs_modified>"C:\Program Files (x86)\GNU Tools ARM Embedded\6.2 2016q4\bin\arm-none-eabi-as" -al -EB -march=armv4 Bonus_credit.s
+ARM GAS  Bonus_credit.s                         page 1
+
+
+   1                    .text
+   2                    main:
+   3                    /*Clear R9 */
+   4 0000 E3A09000      MOV  R9,#0
+   5
+   6                    /*Check the register shifted modes */
+   7 0004 E3A000C8      MOV      R0,#200 ;
+   8 0008 E3A02014      MOV  R2,#20
+   9 000c E3A03004      MOV  R3,#4
+  10 0010 E3A04002      MOV  R4,#2
+  11                    /* Don't check the register shifted modes for now */
+  12                    /*STR  R2,[R0,R3, LSL #2] */
+  13                    /*LDR  R1,[R0,R3, LSL #2] */
+  14 0014 E5802004      STR  R2,[R0,#4]
+  15 0018 E5901004      LDR  R1,[R0,#4]
+  16 001c E1510002      CMP  R1,R2
+  17 0020 02899001      ADDEQ R9,R9,#1 /*Increment the pass counter */
+  18
+  19
+  20                    /*Check LDRH and STRH */
+  21 0024 E3A000D0      MOV R0,#208
+  22 0028 E3A020FF      MOV R2,#255
+  23 002c E0822002      ADD R2,R2,R2
+  24 0030 E1C020B0      STRH R2,[R0,#0]
+  25 0034 E1D060B0      LDRH R6,[R0,#0]
+  26 0038 E1520006      CMP R2,R6
+  27 003c 02899001      ADDEQ R9,R9,#1 /*Increment the pass counter */
+  28
+  29                    /*Check LDRH and STRH */
+  30 0040 E2822001      ADD R2,R2,#1
+  31 0044 E1C020B2      STRH R2,[R0,#2]
+  32 0048 E1D060B2      LDRH R6,[R0,#2]
+  33 004c E1520006      CMP R2,R6
+  34 0050 02899001      ADDEQ R9,R9,#1 /*Increment the pass counter */
+  35
+  36
+  37                    /*Pass counter is supposed to be 3 at the end of the program
+  38                    Write the passcount to mem[252]
+  39                    End of program. */
+  40 0054 E3A000FC      mov r0,#252
+  41 0058 E5809000      str r9,[r0,#0]
+  42
+  43                    loop:
+  44 005c EAFFFFFE      B loop

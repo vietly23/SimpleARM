@@ -1,0 +1,88 @@
+E:\Winter 2017\EECS112Lab\Programs>"C:\Program Files (x86)\GNU Tools ARM Embedded\6.2 2016q4\bin\arm-none-eabi-as" -al -EB -march=armv4 Regression.s
+ARM GAS  Regression.s                   page 1
+
+
+   1                    .text
+   2                    main:
+   3                    /* Programs adapted from http://www.cse.uaa.alaska.edu/~ssiewert/a225_doc/ARM_ASM_EXAMPLES-from-UT.
+   4                    /*Init the pass register */
+   5 0000 E3A09000      MOV R9,#0
+   6
+   7                    /*Calculate the log of r0 register */
+   8 0004 E3A00008      MOV r0,#8
+   9 0008 EB00000A      BL log
+  10 000c E3A06003      MOV R6,#3  /*Compare the result and increment the counter */
+  11 0010 E1510006      CMP R1,R6
+  12 0014 0B000017      BLEQ pass
+  13
+  14
+  15                    /* Calculate the sum of n natural numbers */
+  16 0018 E3A0000F      MOV r0,#15
+  17 001c EB00000F      BL sum
+  18 0020 E3A06078      MOV r6,#120
+  19 0024 E1500006      CMP r0,r6
+  20 0028 0B000012      BLEQ pass
+  21
+  22                    /*
+  23                    ;Pass counter is supposed to be 2 at the end of the program
+  24                    ;Write the passcount to mem[252]
+  25                    ;End of program.
+  26                    */
+  27 002c E3A000FC      mov r0,#252
+  28 0030 E5809000      str r9,[r0,#0]
+  29
+  30                    loop:
+  31 0034 EAFFFFFE      B loop
+  32
+  33                    /*
+  34                    ;============================================================================================
+  35                    ; Calculates the log to the base 2 of a natural number and outputs the result in r1
+  36                    ; r0 = input variable n
+  37                    ; r0 = output variable m (0 by default)
+  38                    ; r1 = output variable k (n <= 2^k)
+  39                    ;=============================================================================================
+  40                    */
+  41                    log:
+  42 0038 E3A02000      MOV r2, #0 /*; set m = 0 */
+  43 003c E3E01000      MOV r1, #-1 /*; set k = -1 */
+  44                    log_loop:
+  45 0040 E3100001      TST r0, #1 /*; test LSB(n) == 1 */
+  46 0044 12822001      ADDNE r2, r2, #1 /*; set m = m+1 if true */
+  47 0048 E2811001      ADD r1, r1, #1 /*; set k = k+1 */
+  48 004c E1B000A0      MOVS r0, r0, LSR #1 /*; set n = n>>1 */
+  49 0050 1AFFFFFA      BNE log_loop /*; continue if n != 0 */
+  50 0054 E3520001      CMP r2, #1 /*; test m ==1 */
+  51 0058 03A00001      MOVEQ r0, #1 /*; set m = 1 if true */
+  52                    log_rtn:
+  53 005c E1A0F00E      MOV pc,lr
+  54
+  55                    /*
+  56                    ;============================================================================================
+  57                    ; Calculates the sum to n natural numbers
+ARM GAS  Regression.s                  page 2
+
+
+  58                    ; r0 = input variable n
+  59                    ; r0 = output variable sum
+  60                    ;=============================================================================================
+  61                    */
+  62                    sum:
+  63 0060 E3A01000      MOV r1,#0 /*; set sum = 0 */
+  64                    sum_loop:
+  65 0064 E0811000      ADD r1,r1,r0 /*; set sum = sum+n */
+  66 0068 E2500001      SUBS r0,r0,#1 /*; set n = n-1 */
+  67 006c 1AFFFFFC      BNE sum_loop
+  68                    sum_rtn:
+  69 0070 E1A00001      MOV r0,r1 /*; set return value */
+  70 0074 E1A0F00E      MOV pc,lr
+  71
+  72                    /*
+  73                    ;============================================================================================
+  74                    ;Pass subroutine increments the pass count in register R9
+  75                    ;============================================================================================
+  76                    */
+  77                    pass:
+  78 0078 E3A00001      MOV R0,#1
+  79 007c E0899000      ADD R9,R9,R0
+  80 0080 E1A0F00E      mov pc,lr
+  81

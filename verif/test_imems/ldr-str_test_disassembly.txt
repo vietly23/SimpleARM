@@ -1,0 +1,47 @@
+
+
+   1                    .text
+   2                    main:
+   3                    /*Clear R9 */
+   4 0000 E3A09000      MOV  R9,#0
+   5 0004 E3A000C8      MOV      R0,#200 ;
+   6 0008 E3A02014      MOV  R2,#20
+   7 000c E3A03004      MOV  R3,#4
+   8 0010 E5802004      STR  R2,[r0,#4]
+   9 0014 E5901004      LDR  R1,[r0,#4]
+  10 0018 E1510002      CMP  R1,R2
+  11 001c 02899001      ADDEQ R9,R9,#1 /*Increment the pass counter */
+  12
+  13 0020 E3A000D0      MOV R0,#208
+  14 0024 E3A0205A      MOV R2,#90
+  15 0028 E5C02000      STRB R2,[R0,#0]
+  16 002c E5D06000      LDRB R6,[R0,#0]
+  17 0030 E1520006      CMP R2,R6
+  18 0034 02899001      ADDEQ R9,R9,#1 /*Increment the pass counter */
+  19
+  20 0038 E2822001      ADD R2,R2,#1
+  21 003c E5C02001      STRB R2,[R0,#1]
+  22 0040 E5D06001      LDRB R6,[R0,#1]
+  23 0044 E1520006      CMP R2,R6
+  24 0048 02899001      ADDEQ R9,R9,#1 /*Increment the pass counter */
+  25
+  26 004c E2822001      ADD R2,R2,#1
+  27 0050 E5C02002      STRB R2,[R0,#2]
+  28 0054 E5D06002      LDRB R6,[R0,#2]
+  29 0058 E1520006      CMP R2,R6
+  30 005c 02899001      ADDEQ R9,R9,#1 /*Increment the pass counter */
+  31
+  32 0060 E2822001      ADD R2,R2,#1
+  33 0064 E5C02003      STRB R2,[R0,#3]
+  34 0068 E5D06003      LDRB R6,[R0,#3]
+  35 006c E1520006      CMP R2,R6
+  36 0070 02899001      ADDEQ R9,R9,#1 /*Increment the pass counter */
+  37
+  38                    /*Pass counter is supposed to be 5 at the end of the program
+  39                    Write the passcount to mem[252]
+  40                    End of program.*/
+  41 0074 E3A000FC      mov r0,#252
+  42 0078 E5809000      str r9,[r0,#0]
+  43
+  44                    loop:
+  45 007c EAFFFFFE      B loop
