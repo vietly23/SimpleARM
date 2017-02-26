@@ -10,6 +10,7 @@ vlog -64 -sv -f $verif/tb.cfg -work work
 vopt -64 tb_top -o tb_top_opt +acc -work work
 vopt -64 tb_alu -o tb_alu_opt +acc -work work
 vopt -64 tb_data_proc_top -o tb_data_proc_opt +acc -work work
+vopt -64 tb_bl_proc_top -o tb_bl_proc_opt +acc -work work
 vopt -64 tb_new_top -o tb_new_opt +acc -work work
 vsim -64 -c tb_top_opt -do $sim/sim.do
 vsim -64 -c tb_alu_opt -do $sim/simalu.do

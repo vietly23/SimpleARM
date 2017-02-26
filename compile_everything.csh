@@ -10,10 +10,12 @@ vlog -64 -sv -f $verif/tb.cfg -work work
 vopt -64 tb_top -o tb_top_opt +acc -work work
 vopt -64 tb_alu -o tb_alu_opt +acc -work work
 vopt -64 tb_data_proc_top -o tb_data_proc_opt +acc -work work
+vopt -64 tb_bl_proc_top -o tb_bl_proc_top_opt +acc -work work
 vopt -64 tb_new_top -o tb_new_opt +acc -work work
 echo 'to sim: vsim -64 -c tb_top_opt -do $sim/sim.do'
 echo 'to sim alu: vsim -64 -c tb_alu_opt -do $sim/simalu.do'
 echo 'to sim data_proc: vsim -64 -c tb_data_proc_opt -do $sim/simdata_proc.do'
+echo 'to sim bl_proc: vsim -64 -c bl_data+proc_opt -do $sim/simdata_proc.do'
 echo 'to sim data_proc: vsim -64 -c tb_new_opt -do $sim/simnew.do'
 echo 'to get waveforms'
 echo 'vsim -64 -gui -view waveform.wlf'
