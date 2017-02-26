@@ -13,7 +13,6 @@ module decoder(input logic [1:0] Op,
 	output logic [2:0] memSelect);
 
 	logic [10:0] controls; 
-	logic temp_RegW;
 	logic Branch, ALUOp;
 
 	//Copy paste opcodes from shifter
@@ -33,23 +32,31 @@ module decoder(input logic [1:0] Op,
 	//pick between register and register shifted register 
 	assign registerShift = Instr[4] & ~Instr[7];
 	
+	logic RegWMask;//set to 0 for the cmp,tst.. instructions
+	logic temp_RegW;
+	
 	
 	// Main Decoder 
 	always_comb 
 		begin
 			shiftOp = 3'h5; //undefined shift opcode causing a passthrough
+			RegWMask = 1'b1; //default value -- doesn't do anything
 			casex(Op)
 				// Data-processing immediate 
-				2'b00: if (Funct[5]) begin
-							controls = 11'b00001010010; 
-							shiftOp  =  `ROR;
-						end
-				// Data-processing register 
-					else begin
-							controls = 11'b00000010010;
-							if (  (~(Instr[11:7] | Instr[4])) & Instr[6:5]) shiftOp = `RRX;
-							else shiftOp = {1'b0,Instr[6:5]};
-						end
+				2'b00: begin
+							//don't update registers on those compare instructions
+							if (Funct[4] & ~Funct[3]) RegWMask = 1'b0;
+							if (Funct[5]) begin
+								controls = 11'b00001010010; 
+								shiftOp  =  `ROR;
+							end
+							// Data-processing register 
+							else begin
+									controls = 11'b00000010010;
+									if (  (!(Instr[11:7] || Instr[4])) && Instr[6:5]) shiftOp = `RRX;
+									else shiftOp = {1'b0,Instr[6:5]};
+								end
+							end
 				2'b01: if(Funct[2]) begin
                   if(Funct[0]) begin
                     // Load Byte
@@ -87,6 +94,7 @@ module decoder(input logic [1:0] Op,
 	assign memSelect = {loadSigned,enableSelect};
 	assign {RegSrc, ImmSrc, ALUSrc, MemtoReg, 
 		temp_RegW, MemW, Branch, ALUOp, linkSelect} = controls;
+	assign RegW = temp_RegW & RegWMask;
 
 	//Copy paste from alu.sv - make sure this is synchd
 	`define AND 4'h0
@@ -142,9 +150,7 @@ module decoder(input logic [1:0] Op,
 		ALUControl = `ADD; // add for non-DP instructions 
 		FlagW = 4'b0000; // don't update Flags 
 	end
-	always_comb
-	if (Funct[4] & ~Funct[3]) RegW = 0;
-	else RegW = temp_RegW;
+
 	// PC Logic 
 	assign PCS = ((Rd == 4'b1111) & RegW) | Branch; 
 endmodule
