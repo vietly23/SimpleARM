@@ -13,6 +13,7 @@ module decoder(input logic [1:0] Op,
 	output logic [2:0] memSelect);
 
 	logic [10:0] controls; 
+	logic temp_RegW;
 	logic Branch, ALUOp;
 
 	//Copy paste opcodes from shifter
@@ -85,7 +86,7 @@ module decoder(input logic [1:0] Op,
 
 	assign memSelect = {loadSigned,enableSelect};
 	assign {RegSrc, ImmSrc, ALUSrc, MemtoReg, 
-		RegW, MemW, Branch, ALUOp, linkSelect} = controls;
+		temp_RegW, MemW, Branch, ALUOp, linkSelect} = controls;
 
 	//Copy paste from alu.sv - make sure this is synchd
 	`define AND 4'h0
@@ -141,6 +142,9 @@ module decoder(input logic [1:0] Op,
 		ALUControl = `ADD; // add for non-DP instructions 
 		FlagW = 4'b0000; // don't update Flags 
 	end
+	always_comb
+	if (Funct[4] & ~Funct[3]) RegW = 0;
+	else RegW = temp_RegW;
 	// PC Logic 
 	assign PCS = ((Rd == 4'b1111) & RegW) | Branch; 
 endmodule
