@@ -74,10 +74,11 @@ module decoder(input logic [1:0] Op,
                   end
         end
 					// B 
-				2'b10: controls = 11'b01101000100;
-					// B & L
-				2'b11: controls = 11'b01101000101;
-						
+				2'b10: 
+				begin
+				if(Funct[4]) controls = 11'b01101010101; //B&L
+				else controls = 11'b01101000100; //B
+				end		
 					// Unimplemented 
 				default: controls = 11'bx; 
 			endcase

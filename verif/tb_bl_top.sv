@@ -28,15 +28,22 @@ module tb_bl_top();
     // at end of program
     always @(negedge clk)
     begin
+		if(PC>>2 == 0) 
+		begin
+			$display("RF WE:%d RF WA:%d RF RD:%d",tb_bl_top.dut.arm.dp.rf.we3, tb_bl_top.dut.arm.dp.rf.wa3, tb_bl_top.dut.arm.dp.rf.wd3);
+		end
+		
 		if(PC>>2 >= 4) 
 		begin //upperbound on clock cycles
-			if (tb_bl_top.dut.arm.dp.rf.rf[14] == 1)
+			if ((tb_bl_top.dut.arm.dp.rf.rf[14])>>2 == 1)
 			begin
-				if (WriteData == -8)
-				begin
-					$display("Success");
-					$stop;
-				end
+				$display("Success");
+				$stop;
+			end
+			else
+			begin
+				$display("Fail");
+				$stop;
 			end
 		// still need to check this
 		
