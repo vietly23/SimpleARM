@@ -10,6 +10,8 @@ module extend(input logic [23:0] Instr,
 		2'b01: ExtImm = {20'b0, Instr[11:0]};
 				// 24-bit two's complement shifted branch
 		2'b10: ExtImm = {{6{Instr[23]}}, Instr[23:0], 2'b00};
+				// immediate offset/index for memory
+		2'b11: ExtImm = { 24'b0, Instr[11:8] , Instr[3:0]};
 		default: ExtImm = 32'bx; // undefined
 	endcase
 endmodule

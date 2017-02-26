@@ -42,20 +42,41 @@ module decoder(input logic [1:0] Op,
 			shiftOp = 3'h5; //undefined shift opcode causing a passthrough
 			RegWMask = 1'b1; //default value -- doesn't do anything
 			loadSigned = 1'b0; //default value - unsigned loading
+			enableSelect = `WORD; //default value - whole word
 			casex(Op)
-				// Data-processing immediate 
+				// Data-processing immediate or ldrh/strh/ldrsb/ldrsh
 				2'b00: begin
 							//don't update registers on those compare instructions
 							if (Funct[4] & ~Funct[3]) RegWMask = 1'b0;
-							if (Funct[5]) begin
+							if (Funct[5]) begin //immediate
 								controls = 11'b00001010010; 
 								shiftOp  =  `ROR;
 							end
-							// Data-processing register 
+							// Data-processing register or ldrh/strh/ldrsb/ldrsh
 							else begin
-									controls = 11'b00000010010;
-									if ( (Instr[11:7] === 5'b0000) && (Instr[4] === 1'b0) && (Instr[6:5] === 2'b11)) shiftOp = `RRX;
-									else shiftOp = {1'b0,Instr[6:5]};
+									if (Instr[7] & Instr[4]) //memory ops set ImmSrc to 11 for all
+									begin
+										if(Instr[5]) //halves
+										begin
+											loadSigned = Instr[6];
+											enableSelect = `HALF;
+											if(Funct[0]) controls = 11'b00111110000;//loading
+											else controls = 11'b10111101000; //storing
+										end
+										else //has to be ldrsb
+										begin
+											loadSigned = 1'b1;
+											enableSelect = `BYTE;
+											controls = 11'b00111110000;
+										end
+									end
+									else //data processing 
+									begin
+										controls = 11'b00000010010;
+										if ( (Instr[11:7] === 5'b0000) && (Instr[4] === 1'b0) && (Instr[6:5] === 2'b11)) shiftOp = `RRX;
+										else shiftOp = {1'b0,Instr[6:5]};
+									end
+
 								end
 							end
 				2'b01: if(Funct[2]) begin
