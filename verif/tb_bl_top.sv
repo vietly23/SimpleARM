@@ -1,5 +1,5 @@
 
-module tb_bl_proc_top();
+module tb_bl_top();
     logic clk;
     logic reset;
     logic [31:0] DataAdr;
@@ -9,7 +9,7 @@ module tb_bl_proc_top();
 	
 
     // instantiate device to be tested
-    bl_proc_top dut(clk, reset, DataAdr, WriteData, MemWrite, PC);
+    bl_top dut(clk, reset, DataAdr, WriteData, MemWrite, PC);
 
 
     // initialize test
@@ -28,9 +28,12 @@ module tb_bl_proc_top();
     // at end of program
     always @(negedge clk)
     begin
-		if(PC>>2 >= 4) begin //upperbound on clock cycles
-			if (tb_bl_proc_top.dut.arm.dp.rf.rf[14] == 1)
+		if(PC>>2 >= 4) 
+		begin //upperbound on clock cycles
+			if (tb_bl_top.dut.arm.dp.rf.rf[14] == 1)
+			begin
 				if (WriteData == -8)
+				begin
 					$display("Success");
 					$stop;
 				end

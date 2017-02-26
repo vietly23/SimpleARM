@@ -1,4 +1,4 @@
-module bl_proc_top(
+module bl_top(
     input  logic clk, reset,
     output logic [31:0] DataAdr,
     output logic [31:0] WriteData,
@@ -13,7 +13,7 @@ module bl_proc_top(
     // instantiate processor and memories
     arm  arm(clk, reset, PC, Instr, MemWrite, DataAdr, WriteData, ReadData);
     
-    bl_proc_mem imem(PC, Instr);
+    bl_mem imem(PC, Instr);
     
 	
     dmem dmem(clk, MemWrite, DataAdr, WriteData, ReadData);

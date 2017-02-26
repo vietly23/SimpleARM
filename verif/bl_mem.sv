@@ -1,5 +1,5 @@
 
-module data_proc_mem (
+module bl_mem (
 	input logic [31:0] a,
 	output logic [31:0] rd
 	);
@@ -16,5 +16,4 @@ module data_proc_mem (
 	
 	
 	assign rd = RAM[a [31:2]]; // word aligned
-	*/
 endmodule
