@@ -1,3 +1,4 @@
 *.do text eol=lf
 *.csh text eol=lf
+*.tcl text eol=lf
 run text eol=lf

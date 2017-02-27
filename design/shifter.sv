@@ -17,12 +17,12 @@ carryOut = carryIn; //default
 case(opcode)
 	`LSL: a_out = a << shift;
 	`LSR: begin
-			if (shift === 5'b00000) a_out = 32'h00000000;
+			if (shift == 5'b00000) a_out = 32'h00000000;
 			else a_out = a >> shift;
 		  end
 	`ROR: a_out = (a << shift) | (a >> (32-shift));
 	`ASR: begin
-		if (shift === 5'b00000) a_out = 32'h00000000;
+		if (shift == 5'b00000) a_out = 32'h00000000;
 		else
 		begin
 			if (a[31]) 
