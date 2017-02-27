@@ -20,7 +20,7 @@ case(opcode)
 			if (shift == 5'b00000) a_out = 32'h00000000;
 			else a_out = a >> shift;
 		  end
-	`ROR: a_out = (a << shift) | (a >> (32-shift));
+	`ROR: a_out = (a >> shift) | (a << (32-shift));
 	`ASR: begin
 		if (shift == 5'b00000) a_out = 32'h00000000;
 		else
