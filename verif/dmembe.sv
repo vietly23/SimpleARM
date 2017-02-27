@@ -24,6 +24,6 @@ module dmembe(input logic clk, we,
         if (be[0]) SRAM0[a[31:2]] <= wd[7:0];
         if (be[1]) SRAM1[a[31:2]] <= wd[15:8];
         if (be[2]) SRAM2[a[31:2]] <= wd[23:16];
-        if (be[3]) SRAM2[a[31:2]] <= wd[31:24];
+        if (be[3]) SRAM3[a[31:2]] <= wd[31:24];
       end
 endmodule
