@@ -15,7 +15,9 @@ module datapath(input logic clk, reset,
 		input logic  storedCarry,
 		//kind of shift
 		input logic [2:0] shiftOp,
-		input logic registerShift);
+		input logic registerShift,
+		input logic [2:0] memSelect,
+		output logic [3:0] byteEnable);
 		//Instr[25] will need to be passed in pipeline to control a shiftmux
 
 	logic [31:0] PCNext, PCPlus4, PCPlus8; 
@@ -31,6 +33,10 @@ module datapath(input logic clk, reset,
 	
 	logic[4:0] regShiftMuxOut;
 	
+	//memory
+	logic [3:0] be;
+	logic [31:0] ExtReadData;
+	logic [31:0] rd2Data;
 	
 	//pick between RS(R3) or shift_imm
 	mux #(5) regShiftMux(Instr[11:7], RD3[4:0],  registerShift , regShiftMuxOut); 
@@ -53,16 +59,21 @@ module datapath(input logic clk, reset,
 
 	regfile rf(.clk(clk), .we3(RegWrite), .ra1(RA1), .ra2(RA2), .ra3(Instr[11:8]), 
 		.wa3(BLAmuxOut), .wd3(BLResult), .r15(PCPlus8), 
-		.rd1(SrcA), .rd2(WriteData), .rd3(RD3)); 
+		.rd1(SrcA), .rd2(rd2Data), .rd3(RD3)); 
 
-	mux #(32) resmux(ALUResult, ReadData, MemtoReg, Result); 
+	mux #(32) resmux(ALUResult, ExtReadData, MemtoReg, Result); 
 	mux #(32) bldmux(Result, PCPlus4, linkSelect, BLResult); // Branch and Link
 	mux #(4) blamux(Instr[15:12], 4'b1110, linkSelect, BLAmuxOut); // Branch and Link
  	extend ext(Instr[23:0], ImmSrc, ExtImm);
 	// ALU logic 
-	mux #(32) srcbmux(WriteData, ExtImm, ALUSrc, SrcB); 
+	mux #(32) srcbmux(rd2Data, ExtImm, ALUSrc, SrcB); 
 	alu alu(SrcA, shiftOut, storedCarry, ALUControl, ALUResult, ALUFlags); 
 	
+	//memory
+	byte_enabler byte_enabler(ALUResult[1:0], memSelect[1:0], be);
+	memextend memextend(ReadData, memSelect, be, ExtReadData);
+	write_data_aligner write_data_aligner(rd2Data, memSelect[1:0], be, WriteData);
+	assign byteEnable = be;
 	
 	
 endmodule

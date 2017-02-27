@@ -65,10 +65,10 @@ module tb_ta_top();
     initial
     begin
         #1600;
-		$display("ALU RF 9: %d",tb_ta_top.ta_aludut.arm.dp.rf.rf[9]);
-		$display("BONUS RF 9: %d",tb_ta_top.ta_bonusdut.arm.dp.rf.rf[9]);
-		$display("LOAD RF 9: %d",tb_ta_top.ta_loaddut.arm.dp.rf.rf[9]);
-		$display("REGRESSION RF 9: %d",tb_ta_top.ta_regdut.arm.dp.rf.rf[9]);
+		$display("ALU RF9: %d",tb_ta_top.ta_aludut.arm.dp.rf.rf[9]);
+		$display("BONUS RF9: %d",tb_ta_top.ta_bonusdut.arm.dp.rf.rf[9]);
+		$display("LOAD RF9: %d",tb_ta_top.ta_loaddut.arm.dp.rf.rf[9]);
+		$display("REGRESSION RF9: %d",tb_ta_top.ta_regdut.arm.dp.rf.rf[9]);
 		$finish;
     end
 	
@@ -80,8 +80,8 @@ module tb_ta_top();
             if(ta_aluDataAdr === 252)
 			begin
 			    ta_aluFinish = 1;
-                $display("ta_alu Simulation finished");
-				$display("RF 9: %d",tb_ta_top.ta_aludut.arm.dp.rf.rf[9]);
+                $display("-------ta_alu Simulation finished");
+				$display("RF9: %d",tb_ta_top.ta_aludut.arm.dp.rf.rf[9]);
                 $display("your score is %d out of 9", ta_aluWriteData);
 			end
         end
@@ -94,8 +94,8 @@ module tb_ta_top();
             if(ta_bonusDataAdr === 252)
 			begin
 			    ta_bonusFinish = 1;
-                $display("ta_bonus Simulation finished");
-				$display("RF 9: %d",tb_ta_top.ta_bonusdut.arm.dp.rf.rf[9]);
+                $display("-------ta_bonus Simulation finished");
+				$display("RF9: %d",tb_ta_top.ta_bonusdut.arm.dp.rf.rf[9]);
                 $display("your score is %d out of 3", ta_bonusWriteData);
 			end
         end
@@ -108,8 +108,8 @@ module tb_ta_top();
             if(ta_loadDataAdr === 252)
 			begin
 			    ta_loadFinish = 0;
-                $display("ta_load Simulation finished");
-				$display("RF 9: %d",tb_ta_top.ta_loaddut.arm.dp.rf.rf[9]);
+                $display("-------ta_load Simulation finished");
+				$display("RF9: %d",tb_ta_top.ta_loaddut.arm.dp.rf.rf[9]);
                 $display("your score is %d out of 5", ta_loadWriteData);
 			end
         end
@@ -122,8 +122,8 @@ module tb_ta_top();
             if(ta_regDataAdr === 252)
 			begin
 			    ta_regFinish = 0;
-                $display("ta_reg Simulation finished");
-				$display("RF 9: %d",tb_ta_top.ta_regdut.arm.dp.rf.rf[9]);
+                $display("-------ta_reg Simulation finished");
+				$display("RF9: %d",tb_ta_top.ta_regdut.arm.dp.rf.rf[9]);
                 $display("your score is %d out of 2", ta_regWriteData);
 			end
         end

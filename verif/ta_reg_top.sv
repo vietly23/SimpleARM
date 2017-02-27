@@ -7,12 +7,12 @@ module ta_reg_top(
     );
 
     logic [31:0] PC, Instr, ReadData;
-	
+	logic [3:0] byteEnable;
 	assign PCO = PC;
 
     // instantiate processor and memories
     arm  arm(.clk(clk), .reset(reset), .PC(PC), .Instr(Instr), .MemWrite(MemWrite), 
-				.ALUResult(DataAdr), .WriteData(WriteData), .ReadData(ReadData));
+				.ALUResult(DataAdr), .WriteData(WriteData), .ReadData(ReadData), .byteEnable(byteEnable));
     
     ta_reg_mem imem(PC, Instr);	
 	
