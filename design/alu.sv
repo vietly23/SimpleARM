@@ -79,8 +79,7 @@ case(opcode)
 			 flags[`OVR] = 1'b0;
 	end
 	`SBC: begin
-		if (carry) {flags[`CAR],temp} = (a + (~b));
-		else {flags[`CAR],temp} = (a + (~b)) + 1;
+		{flags[`CAR],temp} = (a + (~b) + carry);
 		if (a[31] & b[31] & ~c[31])
 			 flags[`OVR] = 1'b1;
 		else if (~a[31] & ~b[31] & c[31])
@@ -89,8 +88,7 @@ case(opcode)
 			 flags[`OVR] = 1'b0;
 	end
 	`RSC: begin
-		if (carry) {flags[`CAR],temp} = ((~a) + b);
-		else {flags[`CAR],temp} = ((~a) + b) + 1;
+		{flags[`CAR], temp} = ((~a) + b + carry);
  	     	if (a[31] & ~b[31] & ~c[31])
 			 flags[`OVR] = 1'b1;
 		else if (~a[31] & b[31] & c[31])
