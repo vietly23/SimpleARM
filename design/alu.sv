@@ -34,120 +34,78 @@ always @* begin
 case(opcode)
 	`AND: begin
 		temp = a & b;	
-		flags[`CAR] = 1'b0;
 		flags[`OVR] = 1'b0;
+		flags[`CAR] = 1'b0;
 	end
 	`EOR: begin
 		temp = a ^ b;
-		flags[`CAR] = 1'b0;
 		flags[`OVR] = 1'b0;
+		flags[`CAR] = 1'b0;
 	end
 	`SUB: begin
 		{flags[`CAR],temp} = (a + (~b)) + 1;
-		if (a[31] & ~b[31] & ~c[31])
-			  flags[`OVR] = 1'b1;
-		else if (~a[31] & b[31] & c[31])
-			  flags[`OVR] = 1'b1;
-		else 
-			  flags[`OVR] = 1'b0;
+		flags[`OVR] = (~a[31] & b[31] & temp[31]) | (a[31] & ~b[31] & ~temp[31]);
 	end
 	`RSB: begin
 		{flags[`CAR],temp} = ((~a) + b) + 1;
- 	     	if (a[31] & ~b[31] & ~c[31])
-			 flags[`OVR] = 1'b1;
-		else if (~a[31] & b[31] & c[31])
-			 flags[`OVR] = 1'b1;
-		else 
-			 flags[`OVR] = 1'b0;
+		flags[`OVR] = (a[31] & ~b[31] & temp[31]) | (~a[31] & b[31] & ~temp[31]);
 	end
 	`ADD: begin
 		{flags[`CAR],temp} = a + b;
-		if (a[31] & b[31] & ~c[31])
-			 flags[`OVR] = 1'b1;
-		else if (~a[31] & ~b[31] & c[31])
-			 flags[`OVR] = 1'b1;
-		else 
-			 flags[`OVR] = 1'b0;
+		flags[`OVR] = (a[31] & b[31] & ~temp[31]) | (~a[31] & ~b[31] & temp[31]);
 	end
 	`ADC: begin
 		{flags[`CAR],temp} = a + b + carry;
-		if (a[31] & b[31] & ~c[31])
-			 flags[`OVR] = 1'b1;
-		else if (~a[31] & ~b[31] & c[31])
-			 flags[`OVR] = 1'b1;
-		else 
-			 flags[`OVR] = 1'b0;
+		flags[`OVR] = (a[31] & b[31] & ~temp[31]) | (~a[31] & ~b[31] & temp[31]);
 	end
 	`SBC: begin
 		{flags[`CAR],temp} = (a + (~b) + carry);
-		if (a[31] & b[31] & ~c[31])
-			 flags[`OVR] = 1'b1;
-		else if (~a[31] & ~b[31] & c[31])
-			 flags[`OVR] = 1'b1;
-		else 
-			 flags[`OVR] = 1'b0;
+		flags[`OVR] = (~a[31] & b[31] & temp[31]) | (a[31] & ~b[31] & ~temp[31]);
 	end
 	`RSC: begin
 		{flags[`CAR], temp} = ((~a) + b + carry);
- 	     	if (a[31] & ~b[31] & ~c[31])
-			 flags[`OVR] = 1'b1;
-		else if (~a[31] & b[31] & c[31])
-			 flags[`OVR] = 1'b1;
-		else 
-			 flags[`OVR] = 1'b0;
+		flags[`OVR] = (a[31] & ~b[31] & temp[31]) | (~a[31] & b[31] & ~temp[31]);
 	end
 	`TST: begin
 		temp = a & b;	
-		flags[`CAR] = 1'b0;
 		flags[`OVR] = 1'b0;
+		flags[`CAR] = 1'b0;
 	end
 	`TEQ: begin
 		temp = a ^ b;	
-		flags[`CAR] = 1'b0;
 		flags[`OVR] = 1'b0;
+		flags[`CAR] = 1'b0;
 	end
 	`CMP: begin
 		{flags[`CAR],temp} = (a + (~b)) + 1;
-		if (a[31] & ~b[31] & ~c[31])
-			  flags[`OVR] = 1'b1;
-		else if (~a[31] & b[31] & c[31])
-			  flags[`OVR] = 1'b1;
-		else 
-			  flags[`OVR] = 1'b0;
+		flags[`OVR] = (~a[31] & b[31] & temp[31]) | (a[31] & ~b[31] & ~temp[31]);
 	end
 	`CMN: begin
 		{flags[`CAR],temp} = a + b;
-		if (a[31] & b[31] & ~c[31])
-			 flags[`OVR] = 1'b1;
-		else if (~a[31] & ~b[31] & c[31])
-			 flags[`OVR] = 1'b1;
-		else 
-			 flags[`OVR] = 1'b0;
+		flags[`OVR] = (a[31] & b[31] & ~temp[31]) | (~a[31] & ~b[31] & temp[31]);
 	end
 	`ORR: begin
-		 temp = a | b;
-		 flags[`CAR] = 1'b0;
-		 flags[`OVR] = 1'b0;
+		temp = a | b;
+		flags[`OVR] = 1'b0;
+		flags[`CAR] = 1'b0;
 	end
 	`PAS: begin //take 2nd input and output it.
-		 temp = b;
-		 flags[`CAR] = 1'b0;
-		 flags[`OVR] = 1'b0;
+		temp = b;
+		flags[`OVR] = 1'b0;
+		flags[`CAR] = 1'b0;
 	end	
 	`BIC: begin 
-		 temp = a & (~b);
-		 flags[`CAR] = 1'b0;
-		 flags[`OVR] = 1'b0;
+		temp = a & (~b);
+		flags[`OVR] = 1'b0;
+		flags[`CAR] = 1'b0;
 	end	
 	`MVN: begin //use src2 instead of rn - see "typo in sup.." discussion 
 		 temp = ~b;
-		 flags[`CAR] = 1'b0;
 		 flags[`OVR] = 1'b0;
 	end	
 	default
 		temp = 32'h00000000;
 endcase
-
 if(temp == 0)
 	 flags[`ZER] = 1'b1;
 else
