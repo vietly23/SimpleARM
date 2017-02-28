@@ -22,27 +22,27 @@ case(opcode)
 	end
 	`SUB: begin
 		{flags[`CAR],temp} = (a + (~b)) + 1;
-		flags[`OVR] = (~a[31] & b[31] & temp[31]) | (a[31] & ~b[31] & ~temp[31]);
+		flags[`OVR] = (~a[31] & b[31] & c[31]) | (a[31] & ~b[31] & ~c[31]);
 	end
 	`RSB: begin
 		{flags[`CAR],temp} = ((~a) + b) + 1;
-		flags[`OVR] = (a[31] & ~b[31] & temp[31]) | (~a[31] & b[31] & ~temp[31]);
+		flags[`OVR] = (a[31] & ~b[31] & c[31]) | (~a[31] & b[31] & ~c[31]);
 	end
 	`ADD: begin
 		{flags[`CAR],temp} = a + b;
-		flags[`OVR] = (a[31] & b[31] & ~temp[31]) | (~a[31] & ~b[31] & temp[31]);
+		flags[`OVR] = (a[31] & b[31] & ~c[31]) | (~a[31] & ~b[31] & c[31]);
 	end
 	`ADC: begin
 		{flags[`CAR],temp} = a + b + carry;
-		flags[`OVR] = (a[31] & b[31] & ~temp[31]) | (~a[31] & ~b[31] & temp[31]);
+		flags[`OVR] = (a[31] & b[31] & ~c[31]) | (~a[31] & ~b[31] & c[31]);
 	end
 	`SBC: begin
 		{flags[`CAR],temp} = (a + (~b) + carry);
-		flags[`OVR] = (~a[31] & b[31] & temp[31]) | (a[31] & ~b[31] & ~temp[31]);
+		flags[`OVR] = (~a[31] & b[31] & c[31]) | (a[31] & ~b[31] & ~c[31]);
 	end
 	`RSC: begin
 		{flags[`CAR], temp} = ((~a) + b + carry);
-		flags[`OVR] = (a[31] & ~b[31] & temp[31]) | (~a[31] & b[31] & ~temp[31]);
+		flags[`OVR] = (a[31] & ~b[31] & c[31]) | (~a[31] & b[31] & ~c[31]);
 	end
 	`TST: begin
 		temp = a & b;	
@@ -56,11 +56,11 @@ case(opcode)
 	end
 	`CMP: begin
 		{flags[`CAR],temp} = (a + (~b)) + 1;
-		flags[`OVR] = (~a[31] & b[31] & temp[31]) | (a[31] & ~b[31] & ~temp[31]);
+		flags[`OVR] = (~a[31] & b[31] & c[31]) | (a[31] & ~b[31] & ~c[31]);
 	end
 	`CMN: begin
 		{flags[`CAR],temp} = a + b;
-		flags[`OVR] = (a[31] & b[31] & ~temp[31]) | (~a[31] & ~b[31] & temp[31]);
+		flags[`OVR] = (a[31] & b[31] & ~c[31]) | (~a[31] & ~b[31] & c[31]);
 	end
 	`ORR: begin
 		temp = a | b;
@@ -85,9 +85,9 @@ case(opcode)
 		temp = 32'h00000000;
 endcase
 if(temp == 0)
-	 flags[`ZER] = 1'b1;
+	flags[`ZER] = 1'b1;
 else
-	 flags[`ZER] = 1'b0;
+	flags[`ZER] = 1'b0;
 flags[`NEG] = temp[31];
 end
 assign c = temp;
