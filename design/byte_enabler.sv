@@ -1,13 +1,9 @@
+`include "codes.sv"
 module byte_enabler(input logic [1:0] ALUResult,
                  input logic [1:0] enableSelect,
                  output logic [3:0] be);
 
-	//codes for enableSelect (memSelect[1:0])
-	`define BYTE 2'h0
-	`define HALF 2'h1
-	`define WORD 2'h2
-  
-	always_comb
+always_comb
     case(enableSelect)
 		`BYTE:
 		begin

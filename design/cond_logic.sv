@@ -1,3 +1,4 @@
+`include "codes.sv"
 module cond_logic(input  logic       clk, reset,
 				 input  logic [3:0] Cond,
 				 input  logic [3:0] ALUFlags,
@@ -9,12 +10,6 @@ module cond_logic(input  logic       clk, reset,
 									
 	logic [3:0] Flags;
 	logic       CondEx;
-	
-	//Flags
-	`define NEG 3
-	`define ZER 2
-	`define CAR 1
-	`define OVR 0
 	
 	flopenr #(1)negFlag(clk, reset, FlagW[`NEG],
 						 ALUFlags[`NEG], Flags[`NEG]);

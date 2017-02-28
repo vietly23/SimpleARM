@@ -1,14 +1,10 @@
+`include "codes.sv"
 module memextend(input logic [31:0] data,
                  input logic [2:0] memSelect,//memSelect[2] = loadSigned
                  input logic [3:0] be,
                  output logic [31:0] dataOut);
-
-  //codes for memSelect[1:0]
-  `define BYTE 2'h0
-	`define HALF 2'h1
-	`define WORD 2'h2
   
-	always_comb
+always_comb
     case(memSelect[1:0])
 				// 8-bit unsigned immediate
 		`BYTE:begin

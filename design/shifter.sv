@@ -1,16 +1,10 @@
+`include "codes.sv"
 module shifter (input logic[31:0] a,
 		input logic[2:0] opcode,
 		input logic carryIn,
 		input logic[4:0] shift,
 		output logic[31:0] a_out,
 		output logic carryOut);
-		
-		
-`define LSL 3'h0
-`define LSR 3'h1
-`define ASR 3'h2
-`define ROR 3'h3
-`define RRX 3'h4
 		
 always @* begin
 carryOut = carryIn; //default
