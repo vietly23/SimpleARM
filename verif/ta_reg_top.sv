@@ -16,6 +16,6 @@ module ta_reg_top(
     
     ta_reg_mem imem(PC, Instr);	
 	
-    dmem dmem(.clk(clk), .we(MemWrite), .a(DataAdr), .wd(WriteData), .rd(ReadData));
+    dmembe dmem(.clk(clk), .we(MemWrite), .be(byteEnable), .a(DataAdr), .wd(WriteData), .rd(ReadData));
     
 endmodule

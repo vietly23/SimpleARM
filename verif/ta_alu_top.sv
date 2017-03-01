@@ -17,6 +17,6 @@ module ta_alu_top(
     
     ta_alu_mem imem(PC, Instr);	
 	
-    dmem dmem(.clk(clk), .we(MemWrite), .a(DataAdr), .wd(WriteData), .rd(ReadData));
+    dmembe dmem(.clk(clk), .we(MemWrite), .be(byteEnable), .a(DataAdr), .wd(WriteData), .rd(ReadData));
     
 endmodule
