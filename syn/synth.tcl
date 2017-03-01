@@ -102,7 +102,7 @@ current_design ${TOP}
 
 set CORE_CLK_PERIOD            ${clock_period}
 set CLK_NAME                       clk
-set INPUT_DELAY                    2.0
+set INPUT_DELAY                    1.96
 set OUTPUT_DELAY                   0.5
 set MAX_AREA                       0; # Optimize the design for the smallest possible size
 set CLK_SKEW                       0.14

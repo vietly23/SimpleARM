@@ -3,15 +3,15 @@
 #  --> All Systemverilog DESIGN related files should be placed in design directory and add the file name to rtl.cfg file.
 #  --> All Systemverilog TESTBENCH related files should be placed in verif directory and add the file name to tb.cfg file.
 
-# To run your simulation go inside the sim directory and do:
+#To compile everything run
+source compile_everything.csh
 
-# you need to run the following command only once when open a new terminal
-source setup.csh
+#To compile and run simulations run 
+source compile_run.csh
 
-# you need to run the following command only once to create the libraries
-source pre_compile.csh
-
-# run the following command for compilation and simulations
-
-source run
-
+#The data processing test (22 tests) is tb_new_top.sv
+#and the TA tests (the 4 set of tests)
+#are tb_ta_top.sv
+#The TA tests have been split up into 4 different top files with 4 different memories
+#which are all instantiated in tb_ta_top.sv
+#Questions? ntsvetko@uci.edu
