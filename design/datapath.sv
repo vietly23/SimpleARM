@@ -21,7 +21,10 @@ module datapath(input logic clk, reset,
 		//Instr[25] will need to be passed in pipeline to control a shiftmux
 
 		// new for multicycle
-		input logic [1:0] AdrSrc;
+		input logic AdrSrc,
+		input logic ALUSrcA, 
+		input logic [1:0] ALUSrcB,
+		input logic [1:0] ResultSrc;
 		
 	logic [31:0] PCNext, PCPlus4, PCPlus8; 
 	logic [31:0] ExtImm, SrcA, SrcB, Result, BLResult; 
@@ -82,4 +85,9 @@ module datapath(input logic clk, reset,
 	// new multi cycle stuff
 	flopr #(32) ALUResultReg(.clk(clk), .reset(reset), .d(ALUResult), .q(ALUOut));
 	mux #(32) adr(.d0(PC), .d1(ALUOut), .s(AdrSrc), .y(Adr));
+	
+	// template for fig 7.25
+	mux4 #(32) resultmux(.d0(ALUOut), .d1(), .d2(ALUResult), .d3(2'b00), .s(ResultSrc), .y(Result)); // Result - name conflict, d1 - not yet implemented
+	mux4 #(32) ALUSrcBmux(.d0(2b'00), .d1(ExtImm), .d2(4'b0100), .d3(2'b00), .s(ALUSrcB), .y(SrcB)); // SrcB - name conflict
+	mux #(32) ALUSrcAmux(.d0(PC), .d1(), .s(ALUSrcA), .y(SrcA)); // d1 not implemented, name conflict with SrcA
 endmodule
