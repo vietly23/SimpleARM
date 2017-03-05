@@ -73,7 +73,9 @@ module datapath(input logic clk, reset,
  	extend ext(.Instr(Instr[23:0]), .ImmSrc(ImmSrc), .ExtImm(ExtImm));
 	// ALU logic 
 	mux #(32) srcbmux(.d0(rd2Data), .d1(ExtImm), .s(ALUSrc), .y(SrcB)); 
-	alu alu(.a(SrcA), .b(shiftOut), .carry(storedCarry), .opcode(ALUControl), .c(ALUResult), .flags(ALUFlags)); 
+	
+    // later on, .a(SrcAE), .b(SrcBE)
+    alu alu(.a(SrcA), .b(shiftOut), .carry(storedCarry), .opcode(ALUControl), .c(ALUResult), .flags(ALUFlags)); 
 	
 	//memory
 	byte_enabler byte_enabler(.ALUResult(ALUResult[1:0]), .enableSelect(memSelect[1:0]), .be(be));
@@ -89,7 +91,9 @@ module datapath(input logic clk, reset,
     
     
 	// template for fig 7.25
-	mux4 #(32) resultmux(.d0(ALUOut), .d1(), .d2(ALUResult), .d3(2'b00), .s(ResultSrc), .y(Result)); // Result - name conflict, d1 - not yet implemented
-	mux4 #(32) ALUSrcBmux(.d0(2b'00), .d1(ExtImm), .d2(4'b0100), .d3(2'b00), .s(ALUSrcB), .y(SrcB)); // SrcB - name conflict
-	mux #(32) ALUSrcAmux(.d0(PC), .d1(), .s(ALUSrcA), .y(SrcA)); // d1 not implemented, name conflict with SrcA
+	mux #(32) resultmux(.d0(ALUOutW), .d1(ReadDataW), .s(ResultSrc), .y(ResultW)); 
+	mux4 #(32) ALUSrcAmux(.d0(RD1), .d1(ResultW), .d2(ALUOutM), .d3(2'b00), .s(ForwardAE), .y(SrcAE)); 
+    mux4 #(32) ALUSrcBmux(.d0(RD2), .d1(ResultW), .d2(ALUOutM), .d3(2'b00), .s(ForwardBE), .y(SrcBE)); 
+	
+    
 endmodule
