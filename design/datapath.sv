@@ -86,6 +86,8 @@ module datapath(input logic clk, reset,
 	flopr #(32) ALUResultReg(.clk(clk), .reset(reset), .d(ALUResult), .q(ALUOut));
 	mux #(32) adr(.d0(PC), .d1(ALUOut), .s(AdrSrc), .y(Adr));
 	
+    
+    
 	// template for fig 7.25
 	mux4 #(32) resultmux(.d0(ALUOut), .d1(), .d2(ALUResult), .d3(2'b00), .s(ResultSrc), .y(Result)); // Result - name conflict, d1 - not yet implemented
 	mux4 #(32) ALUSrcBmux(.d0(2b'00), .d1(ExtImm), .d2(4'b0100), .d3(2'b00), .s(ALUSrcB), .y(SrcB)); // SrcB - name conflict
