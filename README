@@ -1,17 +1,14 @@
+SimpleARM
+===========
+This is a simple implementation of an ARM processor onto an FPGA board.
 
-# NOTES:
-#  --> All Systemverilog DESIGN related files should be placed in design directory and add the file name to rtl.cfg file.
-#  --> All Systemverilog TESTBENCH related files should be placed in verif directory and add the file name to tb.cfg file.
+Credit
+-------------
+Thanks to the following people for contributing to this project.
+* __Nikita__ - *initial work* - ntsvetko@uci.edu
+* __Kim__  - *initial work* -  kptruon1@uci.edu
+* __Anthony__ - *initial work* - adelaro1@uci.edu
 
-#To compile everything run
-source compile_everything.csh
-
-#To compile and run simulations run 
-source compile_run.csh
-
-#The data processing test (22 tests) is tb_new_top.sv
-#and the TA tests (the 4 set of tests)
-#are tb_ta_top.sv
-#The TA tests have been split up into 4 different top files with 4 different memories
-#which are all instantiated in tb_ta_top.sv
-#Questions? ntsvetko@uci.edu
+Questions?
+----------
+Please contact viettl@uci.edu. __NOTE__: Please put SimpleArm in the subject line, otherwise I might see it was random spam.
